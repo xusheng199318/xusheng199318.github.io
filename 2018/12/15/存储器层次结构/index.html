@@ -104,17 +104,22 @@
 
 
 
-  <meta name="description" content="个人笔记">
+  <meta name="description" content="随机访问存储器（RAM） 随机访问存储器分为两类：静态的（SRAM）和动态的（DRAM）。SRAM具有双稳态性，只要有电就会永远保持它的值，即使有干扰（电子噪音）来扰乱电压，当干扰消除时，电路就会恢复到稳定值。DRAM存储器单元对干扰非常敏感，当电容的电压被扰乱之后，它就永远不会恢复了。暴露在光线下会导致电容电压改变，实际上，数码相机和摄像机中的传感器本质上就是DRAM单元的阵列。  磁盘  I/">
+<meta name="keywords" content="操作系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="存储器层次结构">
 <meta property="og:url" content="http://yoursite.com/2018/12/15/存储器层次结构/index.html">
 <meta property="og:site_name" content="笔记">
-<meta property="og:description" content="个人笔记">
+<meta property="og:description" content="随机访问存储器（RAM） 随机访问存储器分为两类：静态的（SRAM）和动态的（DRAM）。SRAM具有双稳态性，只要有电就会永远保持它的值，即使有干扰（电子噪音）来扰乱电压，当干扰消除时，电路就会恢复到稳定值。DRAM存储器单元对干扰非常敏感，当电容的电压被扰乱之后，它就永远不会恢复了。暴露在光线下会导致电容电压改变，实际上，数码相机和摄像机中的传感器本质上就是DRAM单元的阵列。  磁盘  I/">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-15T14:11:33.828Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/存储器层次结构/磁盘构造.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/存储器层次结构/总线结构.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/存储器层次结构/固态硬盘.png">
+<meta property="og:updated_time" content="2018-12-15T14:45:09.514Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="存储器层次结构">
-<meta name="twitter:description" content="个人笔记">
+<meta name="twitter:description" content="随机访问存储器（RAM） 随机访问存储器分为两类：静态的（SRAM）和动态的（DRAM）。SRAM具有双稳态性，只要有电就会永远保持它的值，即使有干扰（电子噪音）来扰乱电压，当干扰消除时，电路就会恢复到稳定值。DRAM存储器单元对干扰非常敏感，当电容的电压被扰乱之后，它就永远不会恢复了。暴露在光线下会导致电容电压改变，实际上，数码相机和摄像机中的传感器本质上就是DRAM单元的阵列。  磁盘  I/">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/15/存储器层次结构/磁盘构造.png">
 
 
 
@@ -355,9 +360,13 @@
                 
               
 
-              <time title="创建时间：2018-12-15 22:11:33" itemprop="dateCreated datePublished" datetime="2018-12-15T22:11:33+08:00">2018-12-15</time>
+              <time title="创建时间：2018-12-15 22:11:33 / 修改时间：22:45:09" itemprop="dateCreated datePublished" datetime="2018-12-15T22:11:33+08:00">2018-12-15</time>
             
 
+            
+              
+
+              
             
           </span>
 
@@ -389,7 +398,27 @@
       
 
       
-        
+        <h4 id="随机访问存储器（RAM）"><a href="#随机访问存储器（RAM）" class="headerlink" title="随机访问存储器（RAM）"></a>随机访问存储器（RAM）</h4><blockquote>
+<p>随机访问存储器分为两类：静态的（SRAM）和动态的（DRAM）。SRAM具有双稳态性，只要有电就会永远保持它的值，即使有干扰（电子噪音）来扰乱电压，当干扰消除时，电路就会恢复到稳定值。DRAM存储器单元对干扰非常敏感，当电容的电压被扰乱之后，它就永远不会恢复了。暴露在光线下会导致电容电压改变，实际上，数码相机和摄像机中的传感器本质上就是DRAM单元的阵列。</p>
+</blockquote>
+<h4 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h4><p><img src="磁盘构造.png" alt="img"></p>
+<p><img src="总线结构.png" alt="img"></p>
+<p>I/O桥接器主要分为南桥和北桥，北桥连接<code>内存总线</code>南桥连接<code>IO总线</code></p>
+<h4 id="固态硬盘（SSD）"><a href="#固态硬盘（SSD）" class="headerlink" title="固态硬盘（SSD）"></a>固态硬盘（SSD）</h4><blockquote>
+<p>固态硬盘是一种基于山村的存储技术。比起磁盘，SSD由半导体存储器构成，没有移动的部件，因而随机访问时间比旋转磁盘快，但是也更易磨损。</p>
+</blockquote>
+<p><img src="固态硬盘.png" alt="img"></p>
+<h4 id="局部性"><a href="#局部性" class="headerlink" title="局部性"></a>局部性</h4><blockquote>
+<p>局部性原理是指倾向于引用邻近于其他最近引用过的数据项的数据项，或者最近引用过的数据项本身。</p>
+<p>局部性原理主要是为了解决计算机各个逻辑部件之间的访问速度差异。例如：查询的数据放在<code>内存</code>和<code>磁盘</code>中访问的速度不一致。</p>
+</blockquote>
+<h5 id="时间局部性"><a href="#时间局部性" class="headerlink" title="时间局部性"></a>时间局部性</h5><blockquote>
+<p>被引用过一次的内存位置很可能在不远的将来再被多次引用。例如：CPU会将从内存中读出的数据缓存一份放入寄存器，这样下次再访问这个数据时就不需要CPU再从内存中取读取（访问寄存器速度比访问内存快很多倍）。在应用系统中我们会将热点数据放入缓存系统（例如：Redis）中，下次访问的时候就不需要再从磁盘中进行读取。</p>
+</blockquote>
+<h5 id="空间局部性"><a href="#空间局部性" class="headerlink" title="空间局部性"></a>空间局部性</h5><blockquote>
+<p>一个内存位置被引用了一次，那么程序很可能在不远的将来引用附件的一个内存位置。例如：CPU从内存中读取数组的第一个元素时，会将整个数组中的元素都放入寄存器中。在应用系统中我们可能在一次查询中将下次查询需要的值同时带出来，下次就避免了再次发送请求，而是从页面中直接获取值</p>
+</blockquote>
+
       
     </div>
 
@@ -409,6 +438,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
       
 
       
@@ -476,8 +511,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -509,7 +553,15 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">标签</span>
                   
                 </div>
@@ -534,6 +586,22 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#随机访问存储器（RAM）"><span class="nav-number">1.</span> <span class="nav-text">随机访问存储器（RAM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#磁盘"><span class="nav-number">2.</span> <span class="nav-text">磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#固态硬盘（SSD）"><span class="nav-number">3.</span> <span class="nav-text">固态硬盘（SSD）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#局部性"><span class="nav-number">4.</span> <span class="nav-text">局部性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#时间局部性"><span class="nav-number">4.1.</span> <span class="nav-text">时间局部性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空间局部性"><span class="nav-number">4.2.</span> <span class="nav-text">空间局部性</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       

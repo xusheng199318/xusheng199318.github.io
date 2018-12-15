@@ -104,17 +104,24 @@
 
 
 
-  <meta name="description" content="个人笔记">
+  <meta name="description" content="栈 栈是一种后进先出的数据结构，通过push操作把数据压入栈中，通过pop操作删除数据。栈向下生长，栈顶的元素为低地址。   算数和逻辑操作 加载有效地址 leaq是将有效地址写入到目的操作数。  C语言代码 1234long scale(long x, long y, long z)&amp;#123;    long t = x + 4 * y + 12 * z;    return t;&amp;#125;">
+<meta name="keywords" content="操作系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="程序的机器级表示（中）">
 <meta property="og:url" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/index.html">
 <meta property="og:site_name" content="笔记">
-<meta property="og:description" content="个人笔记">
+<meta property="og:description" content="栈 栈是一种后进先出的数据结构，通过push操作把数据压入栈中，通过pop操作删除数据。栈向下生长，栈顶的元素为低地址。   算数和逻辑操作 加载有效地址 leaq是将有效地址写入到目的操作数。  C语言代码 1234long scale(long x, long y, long z)&amp;#123;    long t = x + 4 * y + 12 * z;    return t;&amp;#125;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-15T14:09:32.600Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/栈.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/算数和逻辑操作.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/一元二元操作.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/条件码.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/访问条件码.png">
+<meta property="og:updated_time" content="2018-12-15T14:43:34.713Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="程序的机器级表示（中）">
-<meta name="twitter:description" content="个人笔记">
+<meta name="twitter:description" content="栈 栈是一种后进先出的数据结构，通过push操作把数据压入栈中，通过pop操作删除数据。栈向下生长，栈顶的元素为低地址。   算数和逻辑操作 加载有效地址 leaq是将有效地址写入到目的操作数。  C语言代码 1234long scale(long x, long y, long z)&amp;#123;    long t = x + 4 * y + 12 * z;    return t;&amp;#125;">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/15/程序的机器级表示（中）/栈.png">
 
 
 
@@ -355,9 +362,13 @@
                 
               
 
-              <time title="创建时间：2018-12-15 22:09:32" itemprop="dateCreated datePublished" datetime="2018-12-15T22:09:32+08:00">2018-12-15</time>
+              <time title="创建时间：2018-12-15 22:09:32 / 修改时间：22:43:34" itemprop="dateCreated datePublished" datetime="2018-12-15T22:09:32+08:00">2018-12-15</time>
             
 
+            
+              
+
+              
             
           </span>
 
@@ -389,7 +400,66 @@
       
 
       
-        
+        <h4 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h4><blockquote>
+<p>栈是一种<strong>后进先出</strong>的数据结构，通过<code>push</code>操作把数据压入栈中，通过<code>pop</code>操作删除数据。栈向下生长，栈顶的元素为低地址。</p>
+</blockquote>
+<p><img src="栈.png" alt="img"></p>
+<h4 id="算数和逻辑操作"><a href="#算数和逻辑操作" class="headerlink" title="算数和逻辑操作"></a>算数和逻辑操作</h4><p><img src="算数和逻辑操作.png" alt="img"></p>
+<h5 id="加载有效地址"><a href="#加载有效地址" class="headerlink" title="加载有效地址"></a>加载有效地址</h5><blockquote>
+<p>leaq是将有效地址写入到目的操作数。</p>
+</blockquote>
+<p>C语言代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">scale</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> y, <span class="keyword">long</span> z)</span></span>&#123;</span><br><span class="line">    <span class="keyword">long</span> t = x + <span class="number">4</span> * y + <span class="number">12</span> * z;</span><br><span class="line">    <span class="keyword">return</span> t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译为汇编</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">scale :</span><br><span class="line">	leaq	(%rdi, %rsi, 4), %rax	//x + 4 * y</span><br><span class="line">	leaq	(%rdx, %rdx, 2), %rdx	//z + 2 * z = 3z</span><br><span class="line">	leaq	(%rax, %rdx, 4), %rax	//(x + 4 * y) + 4 * (3 * z) = x + 4 * y + 12 * z</span><br><span class="line">	ret</span><br></pre></td></tr></table></figure>
+<h5 id="一元和二元操作"><a href="#一元和二元操作" class="headerlink" title="一元和二元操作"></a>一元和二元操作</h5><p><img src="一元二元操作.png" alt="img"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">指令</th>
+<th style="text-align:center">目的</th>
+<th style="text-align:center">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">addq %rcx, (%rax)</td>
+<td style="text-align:center">0x100</td>
+<td style="text-align:center">0x100</td>
+</tr>
+<tr>
+<td style="text-align:center">subq %rdx, 8(%rax)</td>
+<td style="text-align:center">0x108</td>
+<td style="text-align:center">0xA8</td>
+</tr>
+<tr>
+<td style="text-align:center">decq %rcx</td>
+<td style="text-align:center">%rcx</td>
+<td style="text-align:center">0x0</td>
+</tr>
+</tbody>
+</table>
+<h5 id="移位操作"><a href="#移位操作" class="headerlink" title="移位操作"></a>移位操作</h5><p>C语言</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">shift_left4_rightn</span><span class="params">(<span class="keyword">long</span> x, <span class="keyword">long</span> n)</span> </span>&#123;</span><br><span class="line">    x &lt;&lt;= <span class="number">4</span>;</span><br><span class="line">    x &gt;&gt;= n;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shift_left4_rightn:</span><br><span class="line">	movq	%rdi, %rax	//get x</span><br><span class="line">	salq	$4, %rax	//x &lt;&lt;= 4</span><br><span class="line">	movl	%esi, %ecx	//get n (4 byte)</span><br><span class="line">	sarq	%cl, %rax	//x &gt;&gt; n</span><br></pre></td></tr></table></figure>
+<h4 id="控制"><a href="#控制" class="headerlink" title="控制"></a>控制</h4><blockquote>
+<p>用jump指令可以改变一组机器代码指令的执行顺序，jump指令指定控制应该被传递到程序的某个其他部分。</p>
+</blockquote>
+<h5 id="条件码"><a href="#条件码" class="headerlink" title="条件码"></a>条件码</h5><p>CF：进位标志。最近的操作使最高位产生了进位</p>
+<p>ZF：零标志。最近的操作得出的结果为0</p>
+<p>SF：符号标志。最近的操作得到的结果为负数</p>
+<p>OF：溢出标志。最近的操作导致一个补码溢出–正溢出或负溢出</p>
+<p><img src="条件码.png" alt="img"></p>
+<blockquote>
+<p>CMP指令根据两个操作数之差来设置条件码，且只设置条件码，不更新目的寄存器</p>
+</blockquote>
+<h5 id="访问条件码"><a href="#访问条件码" class="headerlink" title="访问条件码"></a>访问条件码</h5><p><img src="访问条件码.png" alt="img"></p>
+<p>C语言</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">comp</span><span class="params">(<span class="keyword">data_t</span> a, <span class="keyword">data_t</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a &lt; b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">comp:</span><br><span class="line">	cmpq	%rsi, %rdi	//compare a : b</span><br><span class="line">	setl	%al			//将0或1（低位）放入%rax寄存器</span><br><span class="line">	movzbl	%al, %eax	</span><br><span class="line">	ret</span><br></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -409,6 +479,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
       
 
       
@@ -476,8 +552,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -509,7 +594,15 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">标签</span>
                   
                 </div>
@@ -534,6 +627,22 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#栈"><span class="nav-number">1.</span> <span class="nav-text">栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算数和逻辑操作"><span class="nav-number">2.</span> <span class="nav-text">算数和逻辑操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#加载有效地址"><span class="nav-number">2.1.</span> <span class="nav-text">加载有效地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一元和二元操作"><span class="nav-number">2.2.</span> <span class="nav-text">一元和二元操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#移位操作"><span class="nav-number">2.3.</span> <span class="nav-text">移位操作</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#控制"><span class="nav-number">3.</span> <span class="nav-text">控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#条件码"><span class="nav-number">3.1.</span> <span class="nav-text">条件码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#访问条件码"><span class="nav-number">3.2.</span> <span class="nav-text">访问条件码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
