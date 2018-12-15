@@ -104,23 +104,31 @@
 
 
 
-  <meta name="description" content="个人笔记">
-<meta property="og:type" content="website">
-<meta property="og:title" content="笔记">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="一对一级联123456789public class Order &amp;#123;    private Integer id;    private Integer user_id;    private String number;    private Date createtime;    private String note;    private User user;&amp;#125; 对于需">
+<meta name="keywords" content="mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis级联">
+<meta property="og:url" content="http://yoursite.com/2018/09/15/Mybatis级联/index.html">
 <meta property="og:site_name" content="笔记">
-<meta property="og:description" content="个人笔记">
+<meta property="og:description" content="一对一级联123456789public class Order &amp;#123;    private Integer id;    private Integer user_id;    private String number;    private Date createtime;    private String note;    private User user;&amp;#125; 对于需">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2018/09/15/Mybatis级联/直接加载.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/15/Mybatis级联/侵入式延迟加载1.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/15/Mybatis级联/侵入式延迟加载2.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/15/Mybatis级联/深度延迟加载1.png">
+<meta property="og:image" content="http://yoursite.com/2018/09/15/Mybatis级联/深度延迟加载2.png">
+<meta property="og:updated_time" content="2018-12-15T09:45:26.319Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="笔记">
-<meta name="twitter:description" content="个人笔记">
+<meta name="twitter:title" content="Mybatis级联">
+<meta name="twitter:description" content="一对一级联123456789public class Order &amp;#123;    private Integer id;    private Integer user_id;    private String number;    private Date createtime;    private String note;    private User user;&amp;#125; 对于需">
+<meta name="twitter:image" content="http://yoursite.com/2018/09/15/Mybatis级联/直接加载.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2018/09/15/Mybatis级联/">
 
 
 
@@ -130,7 +138,7 @@
   };
 </script>
 
-  <title>笔记</title>
+  <title>Mybatis级联 | 笔记</title>
   
 
 
@@ -178,8 +186,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -216,7 +223,7 @@
         
         
           
-          <li class="menu-item menu-item-主页 menu-item-active">
+          <li class="menu-item menu-item-主页">
 
     
     
@@ -295,430 +302,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/15/index/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arthur">
-      <meta itemprop="description" content="个人笔记">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/15/index/" class="post-title-link" itemprop="http://yoursite.com/index.html">技术栈</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-15 17:07:03 / 修改时间：17:23:48" itemprop="dateCreated datePublished" datetime="2018-12-15T17:07:03+08:00">2018-12-15</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <table>
-<thead>
-<tr>
-<th><a href="#mybatis">MyBatis</a></th>
-<th><a href="#spring">Spring</a></th>
-<th><a href="#springmvc">SpringMVC</a></th>
-<th><a href="#多线程">多线程</a></th>
-<th><a href="#jvm">JVM</a></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="#数据库">数据库</a></td>
-<td><a href="#数据结构">数据结构</a></td>
-<td><a href="#设计模式">设计模式</a></td>
-<td><a href="#网络">网络</a></td>
-<td><a href="#操作系统">操作系统</a></td>
-</tr>
-<tr>
-<td><a href="#Redis">Redis</a></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><ul>
-<li><a href="https://xusheng199318.github.io/2018/09/16/Mybatis基础应用" target="_blank" rel="noopener">基础应用</a></li>
-<li><a href="https://xusheng199318.github.io/2018/09/15/Mybatis级联" target="_blank" rel="noopener">级联</a></li>
-<li><a href="https://xusheng199318.github.io/2018/09/12/Mybatis缓存" target="_blank" rel="noopener">缓存</a></li>
-<li>执行原理</li>
-</ul>
-<h2 id="spring"><a href="#spring" class="headerlink" title="spring"></a>spring</h2><ul>
-<li>IOC</li>
-<li>Bean的生命周期</li>
-<li>AOP</li>
-<li>事务传播机制</li>
-<li>源码</li>
-</ul>
-<h2 id="springmvc"><a href="#springmvc" class="headerlink" title="springmvc"></a>springmvc</h2><ul>
-<li>基本注解和原理</li>
-<li>执行原理</li>
-</ul>
-<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><ul>
-<li>线程间通信方式</li>
-</ul>
-<h2 id="jvm"><a href="#jvm" class="headerlink" title="jvm"></a>jvm</h2><ul>
-<li>运行时数据区</li>
-<li>内存模型</li>
-<li>垃圾收集算法</li>
-<li>volatile关键字</li>
-<li>类加载机制</li>
-<li>锁</li>
-</ul>
-<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><h3 id="Mysql"><a href="#Mysql" class="headerlink" title="Mysql"></a>Mysql</h3><ul>
-<li>事务隔离级别</li>
-<li>MVCC</li>
-<li>锁</li>
-<li>索引机制</li>
-<li>SQL优化</li>
-<li>设计范式</li>
-<li>分布式数据库</li>
-<li>数据库拆分</li>
-<li>主从数据库</li>
-<li>备份和恢复</li>
-<li>MapReduce</li>
-</ul>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><ul>
-<li>数组</li>
-<li>链表</li>
-<li>栈</li>
-<li>队列</li>
-<li>搜索二叉树</li>
-<li>AVL树</li>
-<li>B-TREE</li>
-<li>B+TREE</li>
-<li>红黑树</li>
-<li>HashMap</li>
-<li>ConcurrentHashMap</li>
-</ul>
-<h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><ul>
-<li><a href="https://xusheng199318.github.io/2018/09/16/设计原则solid" target="_blank" rel="noopener">设计原则solid</a></li>
-<li>UML图</li>
-</ul>
-<h4 id="创建型模式"><a href="#创建型模式" class="headerlink" title="创建型模式"></a>创建型模式</h4><ul>
-<li>简单工厂模式</li>
-<li>工厂方法模式</li>
-<li>抽象工厂模式</li>
-<li>单例模式模式</li>
-<li>原型模式模式</li>
-</ul>
-<h4 id="结构型模式"><a href="#结构型模式" class="headerlink" title="结构型模式"></a>结构型模式</h4><ul>
-<li>适配器模式</li>
-<li><a href="https://xusheng199318.github.io/2018/10/10/装饰者模式" target="_blank" rel="noopener">装饰者模式</a></li>
-<li>代理模式</li>
-<li>外观模式</li>
-<li>组合模式</li>
-<li>桥接模式</li>
-<li>享元模式</li>
-</ul>
-<h4 id="行为型模式"><a href="#行为型模式" class="headerlink" title="行为型模式"></a>行为型模式</h4><ul>
-<li><a href="https://xusheng199318.github.io/2018/09/17/模板方法模式" target="_blank" rel="noopener">模板方法模式</a></li>
-<li>策略模式</li>
-<li>观察者模式</li>
-<li>中介者模式</li>
-<li>状态模式</li>
-<li>责任链模式</li>
-<li>命令模式</li>
-<li>迭代器模式</li>
-</ul>
-<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><ul>
-<li>OSI七层模型</li>
-<li>HTTP协议</li>
-<li>TCP/IP协议</li>
-</ul>
-<h2 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h2><ul>
-<li><a href="https://xusheng199318.github.io/2018/10/14/计算机系统漫游" target="_blank" rel="noopener">计算机系统漫游</a></li>
-<li><a href="https://xusheng199318.github.io/2018/10/21/信息的表示和处理（上）" target="_blank" rel="noopener">信息的表示和处理（上）</a></li>
-<li><a href="https://xusheng199318.github.io/2018/10/28/信息的表示和处理（下）" target="_blank" rel="noopener">信息的表示和处理（下）</a></li>
-<li><a href="https://xusheng199318.github.io/2018/11/04/程序的机器级表示（上）" target="_blank" rel="noopener">程序的机器级表示（上）</a></li>
-<li><a href="https://xusheng199318.github.io/2018/11/10/程序的机器级表示（中）" target="_blank" rel="noopener">程序的机器级表示（中）</a></li>
-<li><a href="https://xusheng199318.github.io/2018/11/18/程序的机器级表示（下）" target="_blank" rel="noopener">程序的机器级表示（下）</a></li>
-<li><a href="https://xusheng199318.github.io/2018/12/02/存储器层次结构" target="_blank" rel="noopener">存储器层次结构</a></li>
-</ul>
-<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><ul>
-<li><a href="https://xusheng199318.github.io/2018/10/25/Redis基础数据结构" target="_blank" rel="noopener">Redis基础数据结构</a></li>
-<li>[Redis主从复制及哨兵模式](</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/15/Mybatis缓存/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arthur">
-      <meta itemprop="description" content="个人笔记">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="笔记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/12/15/Mybatis缓存/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-15 17:45:26" itemprop="dateCreated datePublished" datetime="2018-12-15T17:45:26+08:00">2018-12-15</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="一级缓存"><a href="#一级缓存" class="headerlink" title="一级缓存"></a>一级缓存</h3><p>Mybatis中一级缓存是<code>SqlSession</code>级别的缓存。即同一个<code>SqlSession</code>执行2次相同查询（条件也相同），Mybatis只会在第一发送sql从数据库中查询数据，然后将数据缓存起来，第二次就会从<code>SqlSession</code>中返回数据。Mybatis默认开启了一级缓存。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testOneLevelCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">    UserMapper userMapper = sqlSession.getMapper(UserMapper.class);</span><br><span class="line">    User user1 = userMapper.findUserById(<span class="number">1</span>);</span><br><span class="line">    User user2 = userMapper.findUserById(<span class="number">1</span>);</span><br><span class="line">    System.out.println(user1);</span><br><span class="line">    System.out.println(user2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="..\Images\Mybatis缓存1.png" alt="1536655016308"></p>
-<p>上述代码中虽然对<code>User</code>对象执行了2次查询，但是Mybatis只发送了一次sql从数据库中进行查询。</p>
-<h3 id="二级缓存"><a href="#二级缓存" class="headerlink" title="二级缓存"></a>二级缓存</h3><p>二级缓存是Mapper（namespace）级别的缓存。多个<code>SqlSession</code>去操作同一个Mapper的sql语句，多个<code>SqlSession</code>可以共用二级缓存，二级缓存是跨<code>SqlSession</code>的。一个<code>SqlSession</code>在提交时会把数据刷入2级缓存中，另一个<code>SqlSession</code>执行相同语句时会从2级缓存中获取数据。</p>
-<p>Mybatis默认是关闭二级缓存的，要使用需要在Mybatis的总配置文件中开启（全局），然后再在需要开启二级缓存的映射文件中使用<code>&lt;cache/&gt;</code>标签进行开启（单个映射文件）</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">"cacheEnabled"</span> <span class="attr">value</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTwoLevelCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SqlSession sqlSession1 = sqlSessionFactory.openSession();</span><br><span class="line">    UserMapper userMapper = sqlSession1.getMapper(UserMapper.class);</span><br><span class="line">    User user1 = userMapper.findUserById(<span class="number">1</span>);</span><br><span class="line">    sqlSession1.close();<span class="comment">//当sqlSession1提交时会将数据放入二级缓存</span></span><br><span class="line"></span><br><span class="line">    SqlSession sqlSession2 = sqlSessionFactory.openSession();</span><br><span class="line">    UserMapper userMapper2 = sqlSession2.getMapper(UserMapper.class);</span><br><span class="line">    User user2 = userMapper2.findUserById(<span class="number">1</span>);</span><br><span class="line">    System.out.println(user1);</span><br><span class="line">    System.out.println(user2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="..\Images\Mybatis缓存2.png" alt="1536656135757"></p>
-<p>上述代码虽然属于不同<code>SqlSession</code>但是也只发送了一次sql到数据库进行查询。</p>
-<p>Mybatis在执行查询时会先查询二级缓存，然后再查询一级缓存。</p>
-<p>二级缓存：</p>
-   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)</span></span></span><br><span class="line"><span class="function">      <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    Cache cache = ms.getCache();</span><br><span class="line">    <span class="keyword">if</span> (cache != <span class="keyword">null</span>) &#123;</span><br><span class="line">      flushCacheIfRequired(ms);</span><br><span class="line">      <span class="keyword">if</span> (ms.isUseCache() &amp;&amp; resultHandler == <span class="keyword">null</span>) &#123;</span><br><span class="line">        ensureNoOutParams(ms, boundSql);</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        List&lt;E&gt; list = (List&lt;E&gt;) tcm.getObject(cache, key);</span><br><span class="line">        <span class="keyword">if</span> (list == <span class="keyword">null</span>) &#123;</span><br><span class="line">          list = delegate.&lt;E&gt; query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);</span><br><span class="line">          tcm.putObject(cache, key, list); <span class="comment">// issue #578 and #116</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> delegate.&lt;E&gt; query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>一级缓存：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> &lt;E&gt; <span class="function">List&lt;E&gt; <span class="title">query</span><span class="params">(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    ErrorContext.instance().resource(ms.getResource()).activity(<span class="string">"executing a query"</span>).object(ms.getId());</span><br><span class="line">    <span class="keyword">if</span> (closed) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> ExecutorException(<span class="string">"Executor was closed."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (queryStack == <span class="number">0</span> &amp;&amp; ms.isFlushCacheRequired()) &#123;</span><br><span class="line">      clearLocalCache();</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;E&gt; list;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      queryStack++;</span><br><span class="line">      list = resultHandler == <span class="keyword">null</span> ? (List&lt;E&gt;) localCache.getObject(key) : <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">if</span> (list != <span class="keyword">null</span>) &#123;</span><br><span class="line">        handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      queryStack--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (queryStack == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (DeferredLoad deferredLoad : deferredLoads) &#123;</span><br><span class="line">        deferredLoad.load();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// issue #601</span></span><br><span class="line">      deferredLoads.clear();</span><br><span class="line">      <span class="keyword">if</span> (configuration.getLocalCacheScope() == LocalCacheScope.STATEMENT) &#123;</span><br><span class="line">        <span class="comment">// issue #482</span></span><br><span class="line">        clearLocalCache();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> list;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
 
   
 
@@ -750,10 +336,8 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/09/15/Mybatis级联/" class="post-title-link" itemprop="http://yoursite.com/index.html">Mybatis级联</a>
+          <h1 class="post-title" itemprop="name headline">Mybatis级联
+
               
             
           </h1>
@@ -828,9 +412,7 @@
       
 
       
-        
-          
-            <h3 id="一对一级联"><a href="#一对一级联" class="headerlink" title="一对一级联"></a>一对一级联</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> Integer user_id;</span><br><span class="line">    <span class="keyword">private</span> String number;</span><br><span class="line">    <span class="keyword">private</span> Date createtime;</span><br><span class="line">    <span class="keyword">private</span> String note;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> User user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="一对一级联"><a href="#一对一级联" class="headerlink" title="一对一级联"></a>一对一级联</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Order</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> Integer user_id;</span><br><span class="line">    <span class="keyword">private</span> String number;</span><br><span class="line">    <span class="keyword">private</span> Date createtime;</span><br><span class="line">    <span class="keyword">private</span> String note;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> User user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>对于需要查询Order（订单）信息及对应的User（用户）信息时我们可以采用一对一级联（一个订单对应一个用户）</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">"order"</span> <span class="attr">type</span>=<span class="string">"com.arthur.pojo.Order"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"id"</span> <span class="attr">property</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"createtime"</span> <span class="attr">property</span>=<span class="string">"createtime"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"number"</span> <span class="attr">property</span>=<span class="string">"number"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">association</span> <span class="attr">javaType</span>=<span class="string">"com.arthur.pojo.User"</span> <span class="attr">property</span>=<span class="string">"user"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">"id"</span> <span class="attr">property</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">"username"</span> <span class="attr">property</span>=<span class="string">"username"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">"getOrderList"</span> <span class="attr">resultMap</span>=<span class="string">"order"</span>&gt;</span></span><br><span class="line">    SELECT</span><br><span class="line">        u.id,</span><br><span class="line">        u.username,</span><br><span class="line">        o.createtime,</span><br><span class="line">        o.number</span><br><span class="line">    FROM</span><br><span class="line">    	orders o</span><br><span class="line">    INNER JOIN user u ON u.id = o.user_id;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>通过上述<code>&lt;resultMap&gt;</code>中的<code>&lt;association&gt;</code>标签可以进行一对一级联。除了<code>&lt;resultMap&gt;</code>标签以外也可以通过<code>&lt;resultType&gt;</code>进行一对一级联，只需要新建OrderDTO继承Order，然后将User中的属性加入OrderDTO即可。</p>
@@ -867,8 +449,6 @@
 <p><img src="深度延迟加载2.png" alt="img"></p>
 <p>上述用例中<code>ordersAndUser</code>的关联对象（User）被访问时就会执行其查询语句</p>
 
-          
-        
       
     </div>
 
@@ -889,14 +469,36 @@
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          
+        </div>
       
 
       
+      
+      
 
       
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/15/index/" rel="prev" title="技术栈">
+                技术栈 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
-        <div class="post-eof"></div>
+
+      
       
     </footer>
   </div>
@@ -906,14 +508,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -934,8 +537,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -994,6 +606,22 @@
         </div>
       </div>
 
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一对一级联"><span class="nav-number">1.</span> <span class="nav-text">一对一级联</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一对多级联"><span class="nav-number">2.</span> <span class="nav-text">一对多级联</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟加载"><span class="nav-number">3.</span> <span class="nav-text">延迟加载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直接加载"><span class="nav-number">3.1.</span> <span class="nav-text">直接加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#侵入式延迟加载"><span class="nav-number">3.2.</span> <span class="nav-text">侵入式延迟加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#深度延迟加载"><span class="nav-number">3.3.</span> <span class="nav-text">深度延迟加载</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
       
 
       
@@ -1129,6 +757,10 @@
 
 
   
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
 
   
 
