@@ -8,7 +8,7 @@ top: true
 | [MyBatis](#mybatis) | [Spring](#spring)     | [SpringMVC](#springmvc) | [多线程](#多线程) | [JVM](#jvm)           |
 | ------------------- | --------------------- | ----------------------- | ----------------- | --------------------- |
 | [数据库](#数据库)   | [数据结构](#数据结构) | [设计模式](#设计模式)   | [网络](#网络)     | [操作系统](#操作系统) |
-| [Redis](#Redis)     |                       |                         |                   |                       |
+| [Redis](#Redis)     | [Nginx](#Nginx)       |                         |                   |                       |
 
 ## mybatis
 
@@ -127,3 +127,8 @@ top: true
 
 - [Redis基础数据结构](https://xusheng199318.github.io/2018/12/15/Redis基础数据结构)
 - [Redis主从复制及哨兵模式](https://xusheng199318.github.io/2018/12/15/Redis主从复制及哨兵模式)
+
+## Nginx
+
+- [Nginx配置](https://xusheng199318.github.io/2018/12/20/Nginx配置)
+
