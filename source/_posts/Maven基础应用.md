@@ -37,3 +37,31 @@ scope：
 mvn dependency:tree > d.txt
 
 依赖仲裁：最短路径，pom书写顺序，exclusions排除包
+
+ 生命周期：
+
+​	clean:pre-clean,clean,post-clean
+
+​	default:compile,package,install,deploy....
+
+​	site:pre-site,site,post-site,site-deploy
+
+
+
+mvn clean package -U 强制从版本库拉一次
+
+常用命令：
+
+​	clean:删除target
+
+​	compile:编译
+
+​	test:运行项目中所有的测试用例
+
+​	install:	将模块安装到本地仓库
+
+​	package:打包
+
+​	deploy:把本地jar发布到远程仓库中
+
+mojo，findbugs，versions，source
