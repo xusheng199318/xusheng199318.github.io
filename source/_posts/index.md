@@ -38,6 +38,7 @@ top: true
 
 - [运行时数据区](https://xusheng199318.github.io/2019/02/16/运行时数据区)
 - [内存分配及回收策略](https://xusheng199318.github.io/2019/02/16/内存分配及回收策略)
+- [GC算法](https://xusheng199318.github.io/2019/02/19/GC算法)
 - 内存模型
 - 垃圾收集算法
 - volatile关键字
