@@ -32,6 +32,7 @@ top: true
 
 ## 多线程
 
+- [多线程基础](https://xusheng199318.github.io/2019/02/23/多线程基础)
 - 线程间通信方式
 
 ## jvm
@@ -40,7 +41,6 @@ top: true
 - [内存分配及回收策略](https://xusheng199318.github.io/2019/02/16/内存分配及回收策略)
 - [GC算法](https://xusheng199318.github.io/2019/02/19/GC算法)
 - 内存模型
-- 垃圾收集算法
 - volatile关键字
 - 类加载机制
 - 锁
