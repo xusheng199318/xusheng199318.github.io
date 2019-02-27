@@ -24,7 +24,92 @@ tags: 多线程
 
 ### synchronized底层原理
 
-TODO对象头图片及java对象头、字节码图片
+![img](对象内存布局.png)
+
+> 32位虚拟机中对象头中字段如下
+
+![img](JAVA对象头.png)
+
+> synchronize字节码
+
+~~~java
+public class SyncCode {
+
+    public void testSync() {
+        synchronized (this) {
+            System.out.println("hello");
+        }
+    }
+
+    public synchronized void testS() {
+        System.out.println("hello");
+    }
+}
+~~~
+
+~~~java
+ public void testSync();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: aload_0
+         1: dup
+         2: astore_1
+         3: monitorenter
+         4: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+         7: ldc           #3                  // String hello
+         9: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        12: aload_1
+        13: monitorexit
+        14: goto          22
+        17: astore_2
+        18: aload_1
+        19: monitorexit
+        20: aload_2
+        21: athrow
+        22: return
+      Exception table:
+         from    to  target type
+             4    14    17   any
+            17    20    17   any
+      LineNumberTable:
+        line 9: 0
+        line 10: 4
+        line 11: 12
+        line 12: 22
+      StackMapTable: number_of_entries = 2
+        frame_type = 255 /* full_frame */
+          offset_delta = 17
+          locals = [ class com/arthur/multiThread/SyncCode, class java/lang/Object ]
+          stack = [ class java/lang/Throwable ]
+        frame_type = 250 /* chop */
+          offset_delta = 4
+
+~~~
+
+~~~java
+public synchronized void testS();
+    descriptor: ()V
+    flags: ACC_PUBLIC, ACC_SYNCHRONIZED
+    Code:
+      stack=2, locals=1, args_size=1
+         0: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+         3: ldc           #3                  // String hello
+         5: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+         8: return
+      LineNumberTable:
+        line 15: 0
+        line 16: 8
+}
+
+~~~
+
+> 通过上述字节码，在使用synchronized块时，会使用`monitorenter`和两个`monitorexit`来表示进入同步代码块和退出同步代码块，两个退出分别表示正常退出以及异常退出
+>
+> 对于同步方法使用`ACC_SYNCHRONIZED`来表示该方法是同步的，并且对当前对象实例上锁
+
+
 
 ### java6以后synchronized性能提升
 
