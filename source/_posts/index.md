@@ -33,6 +33,7 @@ top: true
 ## 多线程
 
 - [多线程基础](https://xusheng199318.github.io/2019/02/23/多线程基础)
+- [Synchronized原理及优化](https://xusheng199318.github.io/2019/02/25/synchronized)
 - 线程间通信方式
 
 ## jvm

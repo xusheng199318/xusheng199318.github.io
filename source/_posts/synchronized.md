@@ -111,7 +111,7 @@ public synchronized void testS();
 
 
 
-### java6以后synchronized性能提升
+### synchronized性能提升（JDK6以后）
 
 #### 自旋锁：
 
@@ -156,6 +156,18 @@ public static String copyString(String target) {
 
 #### 轻量级锁：
 
+> 1. 在代码进入同步块的时候，如果同步对象是无锁状态，则在当前线程中的栈帧中建立一个名为Lock Record的空间
+>
+> 2. 拷贝对象头中Mark Word到Lock Record中
+>
+> 3. 比较Mark Word中的信息与Lock Record中的信息是否一致
+>
+> 4. 一致，将对象头中的锁标志位设置为轻量级锁
+>
+> 5. 不一致，说明有其他线程在操作，升级为重量级锁
+>
+> 上述过程中3、4步骤是原子操作，通过操作系统实现同步
+
 #### 偏向锁：
 
 > 如果一个线程获得了锁，那么锁就进入偏向模式，此时Mark Word的结构也变为偏向锁结构，当该线程再次请求锁时，无需再做任何同步操作，即获取锁的过程只需要检查Mark Word的锁标记位为偏向锁及当前线程Id等于Mark Word的ThreadId即可，这样就省去了大量有关锁申请的操作。
@@ -164,15 +176,15 @@ public static String copyString(String target) {
 
 
 
-#### synchronized的四种状态
+#### synchronized锁膨胀
 
-无锁
+>  无锁 -> 偏向锁 -> 轻量级锁 -> 重量级锁
 
-偏向锁
 
-轻量级锁
 
-重量级锁
+
+
+
 
 
 
