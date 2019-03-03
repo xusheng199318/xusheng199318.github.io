@@ -80,6 +80,7 @@ top: true
 
 - [设计原则solid](https://xusheng199318.github.io/2018/12/15/设计原则solid)
 - UML图
+- [敏捷开发](https://xusheng199318.github.io/2019/03/03/敏捷开发)
 
 #### 创建型模式
 
@@ -92,7 +93,7 @@ top: true
 #### 结构型模式
 
 - 适配器模式
-- [装饰者模式](https://xusheng199318.github.io/2018/10/10/装饰者模式)
+- 装饰者模式
 - 代理模式
 - 外观模式
 - 组合模式
