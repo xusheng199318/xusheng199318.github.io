@@ -34,6 +34,8 @@ top: true
 
 - [多线程基础](https://xusheng199318.github.io/2019/02/23/多线程基础)
 - [Synchronized原理及优化](https://xusheng199318.github.io/2019/02/25/synchronized)
+- [ReentrantLock](https://xusheng199318.github.io/2019/04/02/ReentrantLock)
+- [线程池](https://xusheng199318.github.io/2019/04/07/线程池)
 - [线程池基本原理及代码实现](https://xusheng199318.github.io/2019/03/29/线程池基本原理及代码实现)
 - 线程间通信方式
 
