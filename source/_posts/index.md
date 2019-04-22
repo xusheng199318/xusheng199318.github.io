@@ -24,6 +24,7 @@ top: true
 - AOP
 - 事务传播机制
 - 源码
+- [SpringBoot自动配置原理](https://xusheng199318.github.io/2019/04/20/SpringBoot自动配置原理)
 
 ## springmvc
 
@@ -105,7 +106,7 @@ top: true
 
 #### 行为型模式
 
-- [模板方法模式Redis基础数据结构](https://xusheng199318.github.io/2018/09/17/模板方法模式)
+- [模板方法模式](https://xusheng199318.github.io/2018/09/17/模板方法模式)
 - 策略模式
 - 观察者模式
 - 中介者模式
