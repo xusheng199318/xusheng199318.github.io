@@ -72,6 +72,7 @@ top: true
 - 链表
 - 栈
 - 队列
+- [堆](https://xusheng199318.github.io/2019/04/24/堆)
 - 搜索二叉树
 - AVL树
 - B-TREE
