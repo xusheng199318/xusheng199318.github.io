@@ -142,6 +142,7 @@ top: true
 
 ## Redis
 
+- [初识Redis](https://xusheng199318.github.io/2019/05/19/初识Redis)
 - [Redis基础数据结构](https://xusheng199318.github.io/2018/12/15/Redis基础数据结构)
 - [Redis主从复制及哨兵模式](https://xusheng199318.github.io/2018/12/15/Redis主从复制及哨兵模式)
 

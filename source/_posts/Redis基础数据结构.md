@@ -6,6 +6,18 @@ tags: Redis
 
 #### String（字符串）
 
+命令基本格式：
+
+~~~c
+set key value [ex seconds] [px milliseconds] [nx|xx]
+ex seconds：为键设置秒级过期时间
+px millisecondds：为键设置毫秒级过期时间
+nx：键必须不能存在，才可以设置成功，用于添加
+xx：键必须存在，才可以设置成功，用于更新
+~~~
+
+
+
 ```c
 127.0.0.1:6379> set name test1
 OK
@@ -88,9 +100,57 @@ OK
 (integer) 12
 ```
 
+不常用命令：
+
+~~~c
+append key value ：向字符串尾部追加值
+strlen key ：字符串长度
+getset key value ：设置并返回原值
+setrange key offset value ：设置指定位置的字符
+getrange key start end ：获取部分字符串
+~~~
+
 > Redis的字符串内部结构类似Java中的ArrayList，当字符串长度小于1M时，扩容是加倍现有空间，如果超过1M，扩容时只会增加1M空间
+>
+> 值最大不能超过512M
+>
+> **内部编码：**
+>
+> int ：8个字节的长整形
+>
+> embstr ：小于等于39个字节的字符串
+>
+> raw ：大于39个字节的字符串
 
 #### List（列表）
+
+基本命令格式：
+
+> rpush key value [value ...]
+>
+> lpush key value [value ...]
+>
+> linsert key before|after pivot value
+>
+> lrange key start end：包含start和end
+>
+> lindex key index
+>
+> llen key
+>
+> lpop key
+>
+> rpop key
+>
+> lrem key count value：lrem命令会从列表中找到等于value的元素进行删除。count > 0 从做到右，删除最多count个元素。count < 0 从右到左，删除最多count绝对值个元素，count = 0删除所有
+>
+> ltrim key start end：按照索引范围修剪列表
+>
+> lset key index newValue
+>
+> blpop key [key ...] timeout
+>
+> brpop key [key ...] timeout
 
 右边进左边出：
 
