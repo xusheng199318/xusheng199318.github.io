@@ -215,6 +215,36 @@ OK
 
 #### Hash（字典）
 
+基本命令格式
+
+>hset key field value
+>
+>hget key field
+>
+>hdel key field [field...]
+>
+>hlen key
+>
+>hgetall key
+>
+>hmset key field value [field value]
+>
+>hmget key field [field...]
+>
+>hexists key
+>
+>hkeys key：获取所有的field
+>
+>hvals key：获取所有的value
+>
+>hgetall key
+>
+>hsetnx key field value 
+>
+>hincrby key field increment
+>
+>hstrlen key field
+
 ```c
 127.0.0.1:6379> hset name user1 test1
 (integer) 1
@@ -259,8 +289,44 @@ OK
 ```
 
 > Redis的字典相当于Java中的HashMap，Redis采用了渐进式rehash策略
+>
+> ziplist：当哈希类型的元素个数小于hash-max-ziplist-entries（默认512）时，ziplist更加紧凑，多个元素连续存储
+>
+> hashtable：当哈希类型无法满足ziplist的条件时，使用hashtable。例如：当value大于64字节时，或者元素个数大于512时
 
 #### Set（集合）
+
+基本命令格式
+
+> sadd key element [element]
+>
+> srem key element [element]
+>
+> scard key：计算元素个数
+>
+> sismember key element：判断元素是否在集合中
+>
+> srandmember key [count]：随机从集合中返回count（默认1）个元素
+>
+> spop key：从集合中随机弹出一个元素
+>
+> smembers key：获取所有元素，属于较重命令，可以使用sscan代替
+>
+> spop key：从集合随机弹出元素
+>
+> smembers key：获取所有元素，返回结果是无序的
+>
+> sinter key [key...]：求集合的交集
+>
+> sunion key [key...]：求集合的并集
+>
+> sdiff key [key...]：差集
+>
+> sinterstore destination key [key...]
+>
+> suniontstore destination key [key...]
+>
+> sdiffstore destination key [key...]
 
 ```c
 127.0.0.1:6379> sadd users test1
@@ -283,8 +349,44 @@ OK
 ```
 
 > Set集合相当于Java语言里的HashSet，无序且唯一
+>
+> intset：当集合中的元素都是整数切元素个数小于set-max-intset-entried时，内部编码为intset
+>
+> hashtable：当元素个数超过512个时或当某个元素不为整数时，内部编码为hashtable
 
 #### Zset（有序集合）
+
+基本命令格式
+
+> zadd key score member [score memeber...]
+>
+> zcard key
+>
+> zscore key member
+>
+> zrank key member：计算成员的排名，正序
+>
+> zrevrank key member
+>
+> zrem key member [member...]
+>
+> zincrby key increment member
+>
+> zrange key start end [withscores]：返回指定排名范围的成员
+>
+> zrebrange key start end [withscores]
+>
+> zrangescore key min max [withscores] \[limit offset count]：返回指定分数范围的成员，min和max支持开区间（小括号），闭区间（中括号），-inf（无穷小）,+inf（无限大）
+>
+> zrevrangebyscore key max min [withscores] \[limit offset count]
+>
+> zcount key min max：返回指定分数范围成员个数
+>
+> zremrangebyrank key start end：删除制定排名内的升序元素
+>
+> zremrangebyscore key min max：删除制定分数范围的成员
+>
+> zinterstore destination numkeys key [key...] \[weights weight [weight]] \[aggregate sum|min|max]
 
 ```c
 127.0.0.1:6379> zadd users 9 age
@@ -334,5 +436,29 @@ OK
 2) "user3"
 ```
 
-> Zset相当于Java的SortedSet和HashMap的结合，它有一个score代表这value的权重，内部使用的是一种叫`跳表`的数据结构。
+> ziplist：当有序集合的元素个数小于`zset-max-ziplist-entries`默认128，同时每个元素的值都小于`zset-max-ziplist-value`默认64字节时，使用ziplist
+>
+> skiplist：当ziplist条件不满足时，会转为skiplist
+
+#### 键管理
+
+> rename key newkey：键重命名，如果rename之前，键已经存在，那么它的值也将被覆盖，推荐使用`renamenx`命令
+>
+> randomkey：随机返回一个键
+>
+> expire key seconds：键在多少秒后过期
+
+#### 迁移键
+
+> dump + restore：在源redis上，dump命令会将键值序列化，格式采用的是RDB格式，然后在目标redis上通过restore命令将上面序列化的值进行复原。dump key，restore key ttl value
+>
+> migrate：migrate host port key|"" destination-db timeout [copy] \[replace] \[keys key [key...]]
+>
+> migrate 127.0.0.1 6380 "" 0 5000 keys key1 key2 key3
+
+#### 遍历键
+
+> keys pattern：*代表匹配任意字符，?代表匹配一个字符，[]代表匹配部分字符，[1-10]代表匹配1到10，[1,3]代表匹配1或3，\x代表转义，例如要匹配星号、问号需要转义。但是由于redis是单线程架构，所以如果包含了大量的键，很可能会造成redis阻塞，所以在生产环境尽量避免使用`keys`
+>
+> scan cursor [match pattern] \[count number]：count代表每次遍历键的个数，scan方法是渐进式遍历，cursor从0开始遍历，每次返回当前游标的值，直到游标值为0的时候则遍历结束。在遍历期间如果有键值变化则无法精确统计
 
