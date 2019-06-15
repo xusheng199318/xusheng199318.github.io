@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="新生代 新生代分为eden区和2个survivor区，默认比例为8:1:1 可通过参数-XX:SurvivorRatio=8进行配置 默认大小为物理内存的 1/64 垃圾收集策略：复制算法  eden区 当我们使用new关键字创建对象的时候该对象被分配在堆内存中的新生代中的eden区中  survivor区 进行一些GC后仍存活的对象进入survivor区，survivor区默认有2块空间，s0">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存分配及回收策略">
+<meta property="og:url" content="http://yoursite.com/2019/02/16/内存分配及回收策略/index.html">
+<meta property="og:site_name" content="笔记">
+<meta property="og:description" content="新生代 新生代分为eden区和2个survivor区，默认比例为8:1:1 可通过参数-XX:SurvivorRatio=8进行配置 默认大小为物理内存的 1/64 垃圾收集策略：复制算法  eden区 当我们使用new关键字创建对象的时候该对象被分配在堆内存中的新生代中的eden区中  survivor区 进行一些GC后仍存活的对象进入survivor区，survivor区默认有2块空间，s0">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/02/16/内存分配及回收策略/堆内存.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/16/内存分配及回收策略/VisualVM.png">
+<meta property="og:updated_time" content="2019-06-15T02:57:41.147Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="内存分配及回收策略">
+<meta name="twitter:description" content="新生代 新生代分为eden区和2个survivor区，默认比例为8:1:1 可通过参数-XX:SurvivorRatio=8进行配置 默认大小为物理内存的 1/64 垃圾收集策略：复制算法  eden区 当我们使用new关键字创建对象的时候该对象被分配在堆内存中的新生代中的eden区中  survivor区 进行一些GC后仍存活的对象进入survivor区，survivor区默认有2块空间，s0">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/16/内存分配及回收策略/堆内存.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/16/内存分配及回收策略/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>内存分配及回收策略 | 笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/16/内存分配及回收策略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur">
+      <meta itemprop="description" content="个人笔记">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">内存分配及回收策略
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-16 20:22:04" itemprop="dateCreated datePublished" datetime="2019-02-16T20:22:04+08:00">2019-02-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-15 10:57:41" itemprop="dateModified" datetime="2019-06-15T10:57:41+08:00">2019-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="堆内存.png" alt="img"></p>
+<h3 id="新生代"><a href="#新生代" class="headerlink" title="新生代"></a>新生代</h3><blockquote>
+<p>新生代分为<code>eden</code>区和2个<code>survivor</code>区，默认比例为8:1:1</p>
+<p>可通过参数<code>-XX:SurvivorRatio=8</code>进行配置</p>
+<p>默认大小为物理内存的 1/64</p>
+<p>垃圾收集策略：<strong>复制算法</strong></p>
+</blockquote>
+<h4 id="eden区"><a href="#eden区" class="headerlink" title="eden区"></a>eden区</h4><blockquote>
+<p>当我们使用<code>new</code>关键字创建对象的时候该对象被分配在堆内存中的新生代中的<code>eden</code>区中</p>
+</blockquote>
+<h4 id="survivor区"><a href="#survivor区" class="headerlink" title="survivor区"></a>survivor区</h4><blockquote>
+<p>进行一些GC后仍存活的对象进入<code>survivor</code>区，<code>survivor</code>区默认有2块空间，s0和s1，有1块一直都为空</p>
+</blockquote>
+<h3 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h3><blockquote>
+<p>为新生代提供担保机制。当创建的对象无法在新生代分配时或在新生代经历多次GC（默认15次）后仍存活的对象会被分配到老年代</p>
+<p>垃圾收集策略：<strong>标记整理</strong></p>
+</blockquote>
+<h4 id="大对象直接进入老年代"><a href="#大对象直接进入老年代" class="headerlink" title="大对象直接进入老年代"></a>大对象直接进入老年代</h4><blockquote>
+<p>大对象：需要大量连续内存空间的对象，例如：长字符串和数组</p>
+<p>-XX：PretenureSizeThreshold=3145728（3M）当创建的对象大于该值时直接在老年代分配（该参数只对Serial和ParNew收集器有效）</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * -verbose:gc -Xms20M -Xmx20M -Xmn10M</span></span><br><span class="line"><span class="comment"> * -XX:+PrintGCDetails -XX:+UseSerialGC -XX:PretenureSizeThreshold=3145728</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEden</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] allocation;</span><br><span class="line">    allocation = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">5</span> * m];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> generation   total <span class="number">9216</span>K, used <span class="number">6361</span>K [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line">  eden space <span class="number">8192</span>K,  <span class="number">77</span>% used [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000fa0364e0</span>, <span class="number">0x00000000fa200000</span>)</span><br><span class="line">  from space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa300000</span>)</span><br><span class="line">  to   space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa300000</span>, <span class="number">0x00000000fa300000</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line"> tenured generation   total <span class="number">10240</span>K, used <span class="number">5120</span>K [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line">   the space <span class="number">10240</span>K,  <span class="number">50</span>% used [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa900010</span>, <span class="number">0x00000000fa900200</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line"> compacting perm gen  total <span class="number">21248</span>K, used <span class="number">4938</span>K [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fc2c0000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">   the space <span class="number">21248</span>K,  <span class="number">23</span>% used [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fb2d2b90</span>, <span class="number">0x00000000fb2d2c00</span>, <span class="number">0x00000000fc2c0000</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上述代码中将大于3M的对象直接分配到老年代</p>
+</blockquote>
+<h4 id="长期存活的对象进入老年代"><a href="#长期存活的对象进入老年代" class="headerlink" title="长期存活的对象进入老年代"></a>长期存活的对象进入老年代</h4><blockquote>
+<p>对象在<code>eden</code>中出生后且经过一次GC后且可以被<code>Survivor</code>容纳的话该对象的Age就为1，在<code>Survivor</code>中每经过一次GC该对象的Age就会+1，当它的Age到一定阈值（默认为15）后就晋升到老年代</p>
+<p>-XX：MaxTenuringThreshold=1 对象晋升老年代阈值</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * -verbose:gc -XX:+PrintGCDetails</span></span><br><span class="line"><span class="comment"> * -Xms20M -Xmx20M -Xmn10M -XX:+UseSerialGC</span></span><br><span class="line"><span class="comment"> * -XX:MaxTenuringThreshold=1 -XX:+PrintTenuringDistribution</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMaxTenuringThreshold</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] allocation1, allocation2, allocation3;</span><br><span class="line">    allocation1 = <span class="keyword">new</span> <span class="keyword">byte</span>[m / <span class="number">4</span>];</span><br><span class="line">    allocation2 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">4</span> * m];</span><br><span class="line">    allocation3 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">4</span> * m];</span><br><span class="line">    allocation3 = <span class="keyword">null</span>;</span><br><span class="line">    allocation3 = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">4</span> * m];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">1</span> (max <span class="number">1</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1048568</span> bytes,    <span class="number">1048568</span> total</span><br><span class="line">: <span class="number">6584</span>K-&gt;<span class="number">1023</span>K(<span class="number">9216</span>K), <span class="number">0.0078471</span> secs] <span class="number">6584</span>K-&gt;<span class="number">1264</span>K(<span class="number">19456</span>K), <span class="number">0.0079195</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">1</span> (max <span class="number">1</span>)</span><br><span class="line">- age   <span class="number">1</span>:        <span class="number">136</span> bytes,        <span class="number">136</span> total</span><br><span class="line">: <span class="number">5204</span>K-&gt;<span class="number">0</span>K(<span class="number">9216</span>K), <span class="number">0.0053484</span> secs] <span class="number">5444</span>K-&gt;<span class="number">1081</span>K(<span class="number">19456</span>K), <span class="number">0.0054182</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">1</span> (max <span class="number">1</span>)</span><br><span class="line">: <span class="number">4096</span>K-&gt;<span class="number">0</span>K(<span class="number">9216</span>K), <span class="number">0.0027322</span> secs] <span class="number">5177</span>K-&gt;<span class="number">1081</span>K(<span class="number">19456</span>K), <span class="number">0.0027733</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs] </span><br><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> generation   total <span class="number">9216</span>K, used <span class="number">4247</span>K [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line">  eden space <span class="number">8192</span>K,  <span class="number">51</span>% used [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000f9e25d08</span>, <span class="number">0x00000000fa200000</span>)</span><br><span class="line">  from space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa300000</span>, <span class="number">0x00000000fa300000</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line">  to   space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa300000</span>)</span><br><span class="line"> tenured generation   total <span class="number">10240</span>K, used <span class="number">1081</span>K [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line">   the space <span class="number">10240</span>K,  <span class="number">10</span>% used [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa50e430</span>, <span class="number">0x00000000fa50e600</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line"> compacting perm gen  total <span class="number">21248</span>K, used <span class="number">4938</span>K [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fc2c0000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">   the space <span class="number">21248</span>K,  <span class="number">23</span>% used [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fb2d2b90</span>, <span class="number">0x00000000fb2d2c00</span>, <span class="number">0x00000000fc2c0000</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> allocation1对象需要256KB内存，<code>Survivor</code>空间可以容纳，所以在第一次GC时allocation1会进入<code>Survivor</code>空间，在第二次GC时它进入了老年代</p>
+</blockquote>
+<h4 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h4><blockquote>
+<p>虚拟机并不是永远要求对象的年龄必须达到<code>MaxTenuringThreshold</code>才晋升到老年代，如果<code>Survivor</code>空间中相同年龄所有对象大小的总和大于<code>Survivor</code>空间的一半，年龄大于或等于该年龄的对象直接进入老年代，无需等到<code>MaxTenuringThreshold</code>中要求的年龄</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * -verbose:gc -Xms20M -Xmx20M  -Xmn10M</span></span><br><span class="line"><span class="comment"> * -XX:+PrintGCDetails -XX:SurvivorRatio=8</span></span><br><span class="line"><span class="comment"> * -XX:MaxTenuringThreshold=15 -XX:+UseSerialGC</span></span><br><span class="line"><span class="comment"> * -XX:+PrintTenuringDistribution</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMaxTenuringThreshold1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">byte</span>[] allocation1, allocation2, allocation3, allocation4;</span><br><span class="line">    allocation1 = <span class="keyword">new</span> <span class="keyword">byte</span>[m / <span class="number">4</span>];</span><br><span class="line">    allocation2 = <span class="keyword">new</span> <span class="keyword">byte</span>[m / <span class="number">2</span>];</span><br><span class="line">    allocation3 = <span class="keyword">new</span> <span class="keyword">byte</span>[m * <span class="number">4</span>];</span><br><span class="line">    allocation4 = <span class="keyword">new</span> <span class="keyword">byte</span>[m * <span class="number">4</span>];</span><br><span class="line">    allocation4 = <span class="keyword">null</span>;</span><br><span class="line">    allocation4 = <span class="keyword">new</span> <span class="keyword">byte</span>[m * <span class="number">4</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">1</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1048576</span> bytes,    <span class="number">1048576</span> total</span><br><span class="line">: <span class="number">7093</span>K-&gt;<span class="number">1024</span>K(<span class="number">9216</span>K), <span class="number">0.0068300</span> secs] <span class="number">7093</span>K-&gt;<span class="number">1264</span>K(<span class="number">19456</span>K), <span class="number">0.0069039</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">15</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:        <span class="number">136</span> bytes,        <span class="number">136</span> total</span><br><span class="line">: <span class="number">5203</span>K-&gt;<span class="number">0</span>K(<span class="number">9216</span>K), <span class="number">0.0056466</span> secs] <span class="number">5444</span>K-&gt;<span class="number">1168</span>K(<span class="number">19456</span>K), <span class="number">0.0056887</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">15</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">2</span>:        <span class="number">136</span> bytes,        <span class="number">136</span> total</span><br><span class="line">: <span class="number">4096</span>K-&gt;<span class="number">0</span>K(<span class="number">9216</span>K), <span class="number">0.0022093</span> secs] <span class="number">5264</span>K-&gt;<span class="number">1168</span>K(<span class="number">19456</span>K), <span class="number">0.0022431</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs] </span><br><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> generation   total <span class="number">9216</span>K, used <span class="number">4242</span>K [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line">  eden space <span class="number">8192</span>K,  <span class="number">51</span>% used [<span class="number">0x00000000f9a00000</span>, <span class="number">0x00000000f9e24928</span>, <span class="number">0x00000000fa200000</span>)</span><br><span class="line">  from space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa300000</span>, <span class="number">0x00000000fa300088</span>, <span class="number">0x00000000fa400000</span>)</span><br><span class="line">  to   space <span class="number">1024</span>K,   <span class="number">0</span>% used [<span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa200000</span>, <span class="number">0x00000000fa300000</span>)</span><br><span class="line"> tenured generation   total <span class="number">10240</span>K, used <span class="number">1168</span>K [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line">   the space <span class="number">10240</span>K,  <span class="number">11</span>% used [<span class="number">0x00000000fa400000</span>, <span class="number">0x00000000fa524330</span>, <span class="number">0x00000000fa524400</span>, <span class="number">0x00000000fae00000</span>)</span><br><span class="line"> compacting perm gen  total <span class="number">21248</span>K, used <span class="number">4938</span>K [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fc2c0000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">   the space <span class="number">21248</span>K,  <span class="number">23</span>% used [<span class="number">0x00000000fae00000</span>, <span class="number">0x00000000fb2d2b90</span>, <span class="number">0x00000000fb2d2c00</span>, <span class="number">0x00000000fc2c0000</span>)</span><br><span class="line">No shared spaces configured.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上述代码运行结果中<code>Survivor</code>空间占用率为0%，而老年代有1168K被占用了，说明了allocation1和allocation2对象都直接进入了老年代，而没有等到15岁的临界年龄。他们加起来达到了512K，并且是同年的，满足同年对象达到<code>Survivor</code>空间的一半规则</p>
+</blockquote>
+<p><img src="VisualVM.png" alt="jdk1.8内存模型图"></p>
+<h3 id="GC日志说明"><a href="#GC日志说明" class="headerlink" title="GC日志说明"></a>GC日志说明</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[GC[DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> threshold <span class="number">1</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1048576</span> bytes,    <span class="number">1048576</span> total</span><br><span class="line">: <span class="number">7093</span>K-&gt;<span class="number">1024</span>K(<span class="number">9216</span>K), <span class="number">0.0068300</span> secs] <span class="number">7093</span>K-&gt;<span class="number">1264</span>K(<span class="number">19456</span>K), <span class="number">0.0069039</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>GC：说明了本次GC日志类型，其他类型：FullGC，如果是FullGC则说明本次GC是Stop-The-World</p>
+<p>DefNew：说明了本次GC发生的区域，其他类型：Tenured（老年代），Perm（永久带）。这里显示的区域名称与GC收集器密切相关，例如：<code>ParNew</code>收集器则显示为<code>ParNew</code>，如果是<code>ParallelScavenge</code>则为<code>PSYoungGen</code></p>
+<p>方括号里的7093K-&gt;1024K(9216K)：GC前该区域已使用的容量 -&gt; GC后该区域已使用的容量（该内存区域总容量）</p>
+<p>放括号外的7093K-&gt;1264K(19456K)：GC前堆区已使用容量 -&gt; GC后堆区已使用容量（堆总容量）</p>
+<p>0.0068300 secs：表示新生代垃圾收集时间</p>
+<p>0.0069039 secs：整个堆区垃圾收集时间</p>
+<p>Times：user（用户态消耗的CPU时间）， sys（内核态消耗的CPU时间）, real（墙钟时间）</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/16/运行时数据区/" rel="next" title="运行时数据区">
+                <i class="fa fa-chevron-left"></i> 运行时数据区
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/19/GC算法/" rel="prev" title="GC算法">
+                GC算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur</p>
+              <p class="site-description motion-element" itemprop="description">个人笔记</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#新生代"><span class="nav-number">1.</span> <span class="nav-text">新生代</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#eden区"><span class="nav-number">1.1.</span> <span class="nav-text">eden区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#survivor区"><span class="nav-number">1.2.</span> <span class="nav-text">survivor区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#老年代"><span class="nav-number">2.</span> <span class="nav-text">老年代</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#大对象直接进入老年代"><span class="nav-number">2.1.</span> <span class="nav-text">大对象直接进入老年代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#长期存活的对象进入老年代"><span class="nav-number">2.2.</span> <span class="nav-text">长期存活的对象进入老年代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态对象年龄判定"><span class="nav-number">2.3.</span> <span class="nav-text">动态对象年龄判定</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GC日志说明"><span class="nav-number">3.</span> <span class="nav-text">GC日志说明</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

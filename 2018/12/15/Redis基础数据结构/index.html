@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="String（字符串）命令基本格式： 12345set key value [ex seconds] [px milliseconds] [nx|xx]ex seconds：为键设置秒级过期时间px millisecondds：为键设置毫秒级过期时间nx：键必须不能存在，才可以设置成功，用于添加xx：键必须存在，才可以设置成功，用于更新 12345678127.0.0.1:6379&amp;gt; set">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis基础数据结构">
+<meta property="og:url" content="http://yoursite.com/2018/12/15/Redis基础数据结构/index.html">
+<meta property="og:site_name" content="笔记">
+<meta property="og:description" content="String（字符串）命令基本格式： 12345set key value [ex seconds] [px milliseconds] [nx|xx]ex seconds：为键设置秒级过期时间px millisecondds：为键设置毫秒级过期时间nx：键必须不能存在，才可以设置成功，用于添加xx：键必须存在，才可以设置成功，用于更新 12345678127.0.0.1:6379&amp;gt; set">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-15T02:57:41.131Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis基础数据结构">
+<meta name="twitter:description" content="String（字符串）命令基本格式： 12345set key value [ex seconds] [px milliseconds] [nx|xx]ex seconds：为键设置秒级过期时间px millisecondds：为键设置毫秒级过期时间nx：键必须不能存在，才可以设置成功，用于添加xx：键必须存在，才可以设置成功，用于更新 12345678127.0.0.1:6379&amp;gt; set">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/15/Redis基础数据结构/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Redis基础数据结构 | 笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/15/Redis基础数据结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur">
+      <meta itemprop="description" content="个人笔记">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Redis基础数据结构
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-15 22:06:01" itemprop="dateCreated datePublished" datetime="2018-12-15T22:06:01+08:00">2018-12-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-15 10:57:41" itemprop="dateModified" datetime="2019-06-15T10:57:41+08:00">2019-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="String（字符串）"><a href="#String（字符串）" class="headerlink" title="String（字符串）"></a>String（字符串）</h4><p>命令基本格式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> key value [ex seconds] [px milliseconds] [nx|xx]</span><br><span class="line">ex seconds：为键设置秒级过期时间</span><br><span class="line">px millisecondds：为键设置毫秒级过期时间</span><br><span class="line">nx：键必须不能存在，才可以设置成功，用于添加</span><br><span class="line">xx：键必须存在，才可以设置成功，用于更新</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; <span class="built_in">set</span> name test1</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; del name </span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+<p>批量插入字符串：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; mset name1 test1 name2 test2</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; mget name1 name2</span><br><span class="line"><span class="number">1</span>) <span class="string">"test1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test2"</span></span><br></pre></td></tr></table></figure>
+<p>设置过期时间：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; <span class="built_in">set</span> name test2</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">"test2"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; expire name <span class="number">5</span></span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; ttl name</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; ttl name</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; ttl name</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; ttl name</span><br><span class="line">(integer) <span class="number">-2</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line">(nil)</span><br><span class="line">    </span><br><span class="line">与上述代码等效 </span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; setex name <span class="number">5</span> test1</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>如果key不存在就创建</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; setnx name test1</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; setnx name test2</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get name</span><br><span class="line"><span class="string">"test1"</span></span><br></pre></td></tr></table></figure>
+<p>计数：如果value是数字可以进行增加操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; <span class="built_in">set</span> age <span class="number">10</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; incr age</span><br><span class="line">(integer) <span class="number">11</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get age</span><br><span class="line"><span class="string">"11"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; incr age </span><br><span class="line">(integer) <span class="number">12</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; get age</span><br><span class="line"><span class="string">"12"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; incrby age <span class="number">-3</span></span><br><span class="line">(integer) <span class="number">9</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; incrby age <span class="number">3</span></span><br><span class="line">(integer) <span class="number">12</span></span><br></pre></td></tr></table></figure>
+<p>不常用命令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">append key value ：向字符串尾部追加值</span><br><span class="line"><span class="built_in">strlen</span> key ：字符串长度</span><br><span class="line">getset key value ：设置并返回原值</span><br><span class="line">setrange key offset value ：设置指定位置的字符</span><br><span class="line">getrange key start end ：获取部分字符串</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Redis的字符串内部结构类似Java中的ArrayList，当字符串长度小于1M时，扩容是加倍现有空间，如果超过1M，扩容时只会增加1M空间</p>
+<p>值最大不能超过512M</p>
+<p><strong>内部编码：</strong></p>
+<p>int ：8个字节的长整形</p>
+<p>embstr ：小于等于39个字节的字符串</p>
+<p>raw ：大于39个字节的字符串</p>
+</blockquote>
+<h4 id="List（列表）"><a href="#List（列表）" class="headerlink" title="List（列表）"></a>List（列表）</h4><p>基本命令格式：</p>
+<blockquote>
+<p>rpush key value [value …]</p>
+<p>lpush key value [value …]</p>
+<p>linsert key before|after pivot value</p>
+<p>lrange key start end：包含start和end</p>
+<p>lindex key index</p>
+<p>llen key</p>
+<p>lpop key</p>
+<p>rpop key</p>
+<p>lrem key count value：lrem命令会从列表中找到等于value的元素进行删除。count &gt; 0 从做到右，删除最多count个元素。count &lt; 0 从右到左，删除最多count绝对值个元素，count = 0删除所有</p>
+<p>ltrim key start end：按照索引范围修剪列表</p>
+<p>lset key index newValue</p>
+<p>blpop key [key …] timeout</p>
+<p>brpop key [key …] timeout</p>
+</blockquote>
+<p>右边进左边出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpush name test1 test2 test3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; llen name</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lpop name</span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lpop name</span><br><span class="line"><span class="string">"test2"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lpop name</span><br><span class="line"><span class="string">"test3"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lpop name</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+<p>右边进右边出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpush name test1 test2 test3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpop name</span><br><span class="line"><span class="string">"test3"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpop name</span><br><span class="line"><span class="string">"test2"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpop name</span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpop name</span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+<p>慢查询：</p>
+<p><code>lindex</code>相当于Java链表的get（int index）方法，需要对链表进行遍历，index可以为负数，index=-1表示倒数第一个元素</p>
+<p><code>ltrim</code>在区间内的保留，区间外的全部删除，可以通过<code>ltrim</code>实现定长链表</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; rpush name test1 test2 test3</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lindex name</span><br><span class="line">(error) ERR wrong number of arguments for 'lindex' command</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lindex name <span class="number">1</span></span><br><span class="line"><span class="string">"test2"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lindex name <span class="number">0</span></span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lrange name <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"test1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test2"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"test3"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; ltrim name <span class="number">1</span> <span class="number">-1</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; lrange name <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"test2"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test3"</span></span><br></pre></td></tr></table></figure>
+<h4 id="Hash（字典）"><a href="#Hash（字典）" class="headerlink" title="Hash（字典）"></a>Hash（字典）</h4><p>基本命令格式</p>
+<blockquote>
+<p>hset key field value</p>
+<p>hget key field</p>
+<p>hdel key field [field…]</p>
+<p>hlen key</p>
+<p>hgetall key</p>
+<p>hmset key field value [field value]</p>
+<p>hmget key field [field…]</p>
+<p>hexists key</p>
+<p>hkeys key：获取所有的field</p>
+<p>hvals key：获取所有的value</p>
+<p>hgetall key</p>
+<p>hsetnx key field value </p>
+<p>hincrby key field increment</p>
+<p>hstrlen key field</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hset name user1 test1</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hget name user1</span><br><span class="line"><span class="string">"test1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hset name user2 test2</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hset name user3 test3</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hgetall name</span><br><span class="line"><span class="number">1</span>) <span class="string">"user1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test1"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"user2"</span></span><br><span class="line"><span class="number">4</span>) <span class="string">"test2"</span></span><br><span class="line"><span class="number">5</span>) <span class="string">"user3"</span></span><br><span class="line"><span class="number">6</span>) <span class="string">"test3"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hlen name</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hset name user3 test33</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hget name user3</span><br><span class="line"><span class="string">"test33"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hmset users name1 test1 name2 test2 name3 test3</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hgetall users</span><br><span class="line"><span class="number">1</span>) <span class="string">"name1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test1"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"name2"</span></span><br><span class="line"><span class="number">4</span>) <span class="string">"test2"</span></span><br><span class="line"><span class="number">5</span>) <span class="string">"name3"</span></span><br><span class="line"><span class="number">6</span>) <span class="string">"test3"</span></span><br></pre></td></tr></table></figure>
+<p>增加操作：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hmset user age <span class="number">1</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; hincrby user age <span class="number">1</span></span><br><span class="line">(integer) <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Redis的字典相当于Java中的HashMap，Redis采用了渐进式rehash策略</p>
+<p>ziplist：当哈希类型的元素个数小于hash-max-ziplist-entries（默认512）时，ziplist更加紧凑，多个元素连续存储</p>
+<p>hashtable：当哈希类型无法满足ziplist的条件时，使用hashtable。例如：当value大于64字节时，或者元素个数大于512时</p>
+</blockquote>
+<h4 id="Set（集合）"><a href="#Set（集合）" class="headerlink" title="Set（集合）"></a>Set（集合）</h4><p>基本命令格式</p>
+<blockquote>
+<p>sadd key element [element]</p>
+<p>srem key element [element]</p>
+<p>scard key：计算元素个数</p>
+<p>sismember key element：判断元素是否在集合中</p>
+<p>srandmember key [count]：随机从集合中返回count（默认1）个元素</p>
+<p>spop key：从集合中随机弹出一个元素</p>
+<p>smembers key：获取所有元素，属于较重命令，可以使用sscan代替</p>
+<p>spop key：从集合随机弹出元素</p>
+<p>smembers key：获取所有元素，返回结果是无序的</p>
+<p>sinter key [key…]：求集合的交集</p>
+<p>sunion key [key…]：求集合的并集</p>
+<p>sdiff key [key…]：差集</p>
+<p>sinterstore destination key [key…]</p>
+<p>suniontstore destination key [key…]</p>
+<p>sdiffstore destination key [key…]</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; sadd users test1</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; sadd users test2</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; sadd users test3</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; smembers users</span><br><span class="line"><span class="number">1</span>) <span class="string">"test3"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"test1"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"test2"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; sismember users test2</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; scard users</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; spop users</span><br><span class="line"><span class="string">"test2"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Set集合相当于Java语言里的HashSet，无序且唯一</p>
+<p>intset：当集合中的元素都是整数切元素个数小于set-max-intset-entried时，内部编码为intset</p>
+<p>hashtable：当元素个数超过512个时或当某个元素不为整数时，内部编码为hashtable</p>
+</blockquote>
+<h4 id="Zset（有序集合）"><a href="#Zset（有序集合）" class="headerlink" title="Zset（有序集合）"></a>Zset（有序集合）</h4><p>基本命令格式</p>
+<blockquote>
+<p>zadd key score member [score memeber…]</p>
+<p>zcard key</p>
+<p>zscore key member</p>
+<p>zrank key member：计算成员的排名，正序</p>
+<p>zrevrank key member</p>
+<p>zrem key member [member…]</p>
+<p>zincrby key increment member</p>
+<p>zrange key start end [withscores]：返回指定排名范围的成员</p>
+<p>zrebrange key start end [withscores]</p>
+<p>zrangescore key min max [withscores] [limit offset count]：返回指定分数范围的成员，min和max支持开区间（小括号），闭区间（中括号），-inf（无穷小）,+inf（无限大）</p>
+<p>zrevrangebyscore key max min [withscores] [limit offset count]</p>
+<p>zcount key min max：返回指定分数范围成员个数</p>
+<p>zremrangebyrank key start end：删除制定排名内的升序元素</p>
+<p>zremrangebyscore key min max：删除制定分数范围的成员</p>
+<p>zinterstore destination numkeys key [key…] [weights weight [weight]] [aggregate sum|min|max]</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">9</span> age</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">10</span> age</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">11</span> age</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrange user <span class="number">0</span> <span class="number">-1</span></span><br><span class="line">(empty <span class="built_in">list</span> <span class="keyword">or</span> <span class="built_in">set</span>)</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrange users <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"age"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; del users</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; clear</span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">9</span> user1</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">10</span> user2</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zadd users <span class="number">11</span> user3</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrange users <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"user1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"user2"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"user3"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrevrange users <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"user3"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"user2"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"user1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zcard books</span><br><span class="line">(integer) <span class="number">0</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zcard users</span><br><span class="line">(integer) <span class="number">3</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zscore users user1</span><br><span class="line"><span class="string">"9"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrangebyscore users <span class="number">0</span> <span class="number">9</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"user1"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrangebyscore users -inf <span class="number">10</span> withscores</span><br><span class="line"><span class="number">1</span>) <span class="string">"user1"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"9"</span></span><br><span class="line"><span class="number">3</span>) <span class="string">"user2"</span></span><br><span class="line"><span class="number">4</span>) <span class="string">"10"</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrem users user1</span><br><span class="line">(integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; zrange users <span class="number">0</span> <span class="number">-1</span></span><br><span class="line"><span class="number">1</span>) <span class="string">"user2"</span></span><br><span class="line"><span class="number">2</span>) <span class="string">"user3"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ziplist：当有序集合的元素个数小于<code>zset-max-ziplist-entries</code>默认128，同时每个元素的值都小于<code>zset-max-ziplist-value</code>默认64字节时，使用ziplist</p>
+<p>skiplist：当ziplist条件不满足时，会转为skiplist</p>
+</blockquote>
+<h4 id="键管理"><a href="#键管理" class="headerlink" title="键管理"></a>键管理</h4><blockquote>
+<p>rename key newkey：键重命名，如果rename之前，键已经存在，那么它的值也将被覆盖，推荐使用<code>renamenx</code>命令</p>
+<p>randomkey：随机返回一个键</p>
+<p>expire key seconds：键在多少秒后过期</p>
+</blockquote>
+<h4 id="迁移键"><a href="#迁移键" class="headerlink" title="迁移键"></a>迁移键</h4><blockquote>
+<p>dump + restore：在源redis上，dump命令会将键值序列化，格式采用的是RDB格式，然后在目标redis上通过restore命令将上面序列化的值进行复原。dump key，restore key ttl value</p>
+<p>migrate：migrate host port key|”” destination-db timeout [copy] [replace] [keys key [key…]]</p>
+<p>migrate 127.0.0.1 6380 “” 0 5000 keys key1 key2 key3</p>
+</blockquote>
+<h4 id="遍历键"><a href="#遍历键" class="headerlink" title="遍历键"></a>遍历键</h4><blockquote>
+<p>keys pattern：*代表匹配任意字符，?代表匹配一个字符，[]代表匹配部分字符，[1-10]代表匹配1到10，[1,3]代表匹配1或3，\x代表转义，例如要匹配星号、问号需要转义。但是由于redis是单线程架构，所以如果包含了大量的键，很可能会造成redis阻塞，所以在生产环境尽量避免使用<code>keys</code></p>
+<p>scan cursor [match pattern] [count number]：count代表每次遍历键的个数，scan方法是渐进式遍历，cursor从0开始遍历，每次返回当前游标的值，直到游标值为0的时候则遍历结束。在遍历期间如果有键值变化则无法精确统计</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/15/Mybatis缓存/" rel="next" title="Mybatis缓存">
+                <i class="fa fa-chevron-left"></i> Mybatis缓存
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/15/Redis主从复制及哨兵模式/" rel="prev" title="Redis主从复制及哨兵模式">
+                Redis主从复制及哨兵模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur</p>
+              <p class="site-description motion-element" itemprop="description">个人笔记</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#String（字符串）"><span class="nav-number">1.</span> <span class="nav-text">String（字符串）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#List（列表）"><span class="nav-number">2.</span> <span class="nav-text">List（列表）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hash（字典）"><span class="nav-number">3.</span> <span class="nav-text">Hash（字典）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set（集合）"><span class="nav-number">4.</span> <span class="nav-text">Set（集合）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Zset（有序集合）"><span class="nav-number">5.</span> <span class="nav-text">Zset（有序集合）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#键管理"><span class="nav-number">6.</span> <span class="nav-text">键管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#迁移键"><span class="nav-number">7.</span> <span class="nav-text">迁移键</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遍历键"><span class="nav-number">8.</span> <span class="nav-text">遍历键</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

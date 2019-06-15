@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Nginx模块结构 全局模块12345worker_processes  2;	#指定工作进程为2也可以设置为autoworker_cpu_affinity 01 10;	#指定CPU核占用情况。例如：CPU有2核，则第一个进程占用第二个核，第二个进程占用第一个核，此处0和1仅代表占位符，与二进制无关worker_rlimit_nofile 65535;	#同时打开文件数，需要操作系统支持 eve">
+<meta name="keywords" content="Nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx配置">
+<meta property="og:url" content="http://yoursite.com/2018/12/20/Nginx配置/index.html">
+<meta property="og:site_name" content="笔记">
+<meta property="og:description" content="Nginx模块结构 全局模块12345worker_processes  2;	#指定工作进程为2也可以设置为autoworker_cpu_affinity 01 10;	#指定CPU核占用情况。例如：CPU有2核，则第一个进程占用第二个核，第二个进程占用第一个核，此处0和1仅代表占位符，与二进制无关worker_rlimit_nofile 65535;	#同时打开文件数，需要操作系统支持 eve">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2018/12/20/Nginx配置/nginx文件结构.png">
+<meta property="og:updated_time" content="2019-06-15T02:57:41.128Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nginx配置">
+<meta name="twitter:description" content="Nginx模块结构 全局模块12345worker_processes  2;	#指定工作进程为2也可以设置为autoworker_cpu_affinity 01 10;	#指定CPU核占用情况。例如：CPU有2核，则第一个进程占用第二个核，第二个进程占用第一个核，此处0和1仅代表占位符，与二进制无关worker_rlimit_nofile 65535;	#同时打开文件数，需要操作系统支持 eve">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/20/Nginx配置/nginx文件结构.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/20/Nginx配置/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Nginx配置 | 笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/20/Nginx配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur">
+      <meta itemprop="description" content="个人笔记">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Nginx配置
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-20 10:55:25" itemprop="dateCreated datePublished" datetime="2018-12-20T10:55:25+08:00">2018-12-20</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-15 10:57:41" itemprop="dateModified" datetime="2019-06-15T10:57:41+08:00">2019-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Nginx模块结构"><a href="#Nginx模块结构" class="headerlink" title="Nginx模块结构"></a>Nginx模块结构</h3><p><img src="nginx文件结构.png" alt="img"></p>
+<h4 id="全局模块"><a href="#全局模块" class="headerlink" title="全局模块"></a>全局模块</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">worker_processes</span>  <span class="number">2</span>;	<span class="comment">#指定工作进程为2也可以设置为auto</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">worker_cpu_affinity</span> <span class="number">01</span> <span class="number">10</span>;	<span class="comment">#指定CPU核占用情况。例如：CPU有2核，则第一个进程占用第二个核，第二个进程占用第一个核，此处0和1仅代表占位符，与二进制无关</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">worker_rlimit_nofile</span> <span class="number">65535</span>;	<span class="comment">#同时打开文件数，需要操作系统支持</span></span><br></pre></td></tr></table></figure>
+<h4 id="events模块"><a href="#events模块" class="headerlink" title="events模块"></a>events模块</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">worker_connections</span>  <span class="number">1024</span>;	<span class="comment">#一个进程同时可开启的最大连接数</span></span><br><span class="line"></span><br><span class="line">accept-mutex on;	#on表示工作进程排队处理请求，防止多个进程同时抢占资源引起“惊群”，</span><br><span class="line"></span><br><span class="line">accept-mutex_delay 500ms;	#每隔500ms工作进程查看上一个工作进程是否释放了锁，</span><br><span class="line"></span><br><span class="line"><span class="attribute">multi_accept</span> <span class="literal">on</span>;	<span class="comment">#允许同时接收多个连接</span></span><br></pre></td></tr></table></figure>
+<h4 id="http模块"><a href="#http模块" class="headerlink" title="http模块"></a>http模块</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">sendfile</span> <span class="literal">on</span>;	<span class="comment">#开启通过sendfile()零拷贝传输文件，sendfile()可以在磁盘和TCP socket之间互相拷贝数据</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">sendfile_max_chunk</span> <span class="number">128k</span>;	<span class="comment">#每个进程调用sendfile()传输的数据量最大不能超过该值，默认为0表示无限制</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">tcp_nopush</span> <span class="literal">on</span>;	<span class="comment">#在一个数据包里发送头文件，而不是一个接一个发送</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">tcp_nodelay</span> <span class="literal">on</span>;	<span class="comment">#不缓存数据，直接发送</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">keepalive_timeout</span> <span class="number">60</span> <span class="number">10</span>;	<span class="comment">#60代表对服务器端保持连接时间，默认为75s,10代表发给用户端的相应报文中Keep-Alive时间</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">keepalive_requests</span> <span class="number">10000</span>;	<span class="comment">#单连接请求上线，限制用户通过某一连接发送请求次数</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">client_body_timeout</span> <span class="number">10</span>;	<span class="comment">#读取客户端请求体超时时间，超时针对2个连续读操作之间的时间段，并不是整个请求体传输的时间</span></span><br></pre></td></tr></table></figure>
+<h3 id="请求定位"><a href="#请求定位" class="headerlink" title="请求定位"></a>请求定位</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /test &#123;</span><br><span class="line">    <span class="attribute">root</span>	h; </span><br><span class="line">    <span class="attribute">index</span>	test.html;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#请求访问路径为localhost:80/test，资源目录为h/test/test.html</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>路径匹配的优先级（由低到高）：</p>
+<p>普通匹配 -&gt; 长路径匹配 -&gt; 正则匹配 -&gt; 短路匹配 -&gt; 精确匹配</p>
+</blockquote>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> ~.*(/|/test) &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://www.baidu.com;</span><br><span class="line">    </span><br><span class="line">    <span class="attribute">client_max_body_size</span> <span class="number">100k</span>;</span><br><span class="line">    <span class="attribute">client_body_buffer_size</span> <span class="number">128k</span></span><br><span class="line">    proxy_connect_timeout <span class="number">60s</span>;		<span class="comment">#nginx与后端被代理服务器尝试建立连接的超时时间</span></span><br><span class="line">    <span class="attribute">proxy_read_timeout</span> <span class="number">60s</span>;			<span class="comment">#nginx向被代理服务发出read请求后，等待相应的超时时间</span></span><br><span class="line">    <span class="attribute">proxy_buffer_size</span> <span class="number">60s</span>;</span><br><span class="line">    <span class="attribute">proxy_buffers</span> <span class="number">4</span> <span class="number">32k</span>;</span><br><span class="line">    <span class="attribute">proxy_busy_buffers_size</span> <span class="number">64</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果访问localhost:80会直接跳转到百度，如果访问localhost:80/test会到百度域名下请求名为test的资源</p>
+</blockquote>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#http模块下配置</span></span><br><span class="line"><span class="attribute">upstream</span> www.xxx.com &#123;</span><br><span class="line">    <span class="comment">#ip_hash|least_conn	负载均衡策略，默认为轮循，配置ip_hash相同ip地址每次都是同一个服务器提供服务，可以解决session问题,least_conn表示请求分发到最少连接的服务器上（性能不好）</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8080</span> weight=<span class="number">2</span> fail_timeout=<span class="number">1s</span> max_fail=<span class="number">3</span>;	<span class="comment">#配置服务地址，权重，超时时间和失败次数，连接失败判定条件为超过1秒或失败3次</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8085</span> weight=<span class="number">1</span> fail_timeout=<span class="number">1s</span> max_fail=<span class="number">3</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8087</span> backup;	<span class="comment">#备机</span></span><br><span class="line">    <span class="attribute">server</span> <span class="number">127.0.0.1:8090</span> down;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">#http模块下的server模块下配置</span></span><br><span class="line"><span class="attribute">location</span> ~.*(/|/some) &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://www.xxx.com;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/15/信息的表示和处理（下）/" rel="next" title="信息的表示和处理（下）">
+                <i class="fa fa-chevron-left"></i> 信息的表示和处理（下）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/23/异常控制流/" rel="prev" title="异常控制流">
+                异常控制流 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur</p>
+              <p class="site-description motion-element" itemprop="description">个人笔记</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx模块结构"><span class="nav-number">1.</span> <span class="nav-text">Nginx模块结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#全局模块"><span class="nav-number">1.1.</span> <span class="nav-text">全局模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#events模块"><span class="nav-number">1.2.</span> <span class="nav-text">events模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http模块"><span class="nav-number">1.3.</span> <span class="nav-text">http模块</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求定位"><span class="nav-number">2.</span> <span class="nav-text">请求定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向代理"><span class="nav-number">3.</span> <span class="nav-text">反向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载均衡"><span class="nav-number">4.</span> <span class="nav-text">负载均衡</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

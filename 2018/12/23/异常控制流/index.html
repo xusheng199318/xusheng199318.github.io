@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="异常 异常是异常控制流的一种形式，它一部分由硬件实现，一部分由操作系统实现。异常就是控制流中的突变，用来响应处理器状态中的某些变化。  异常处理 系统中可能的每种异常都分配了一个唯一的非负整数的异常号 处理器分配：被0除、缺页、内存访问违例、断点及算数运算溢出 操作系统内核分配：系统调用和来自外部I/O设备的信号  异常的类别中断、陷阱、故障和终止 进程 在现代系统上运行一个程序时，我们会得到一个">
+<meta name="keywords" content="操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="异常控制流">
+<meta property="og:url" content="http://yoursite.com/2018/12/23/异常控制流/index.html">
+<meta property="og:site_name" content="笔记">
+<meta property="og:description" content="异常 异常是异常控制流的一种形式，它一部分由硬件实现，一部分由操作系统实现。异常就是控制流中的突变，用来响应处理器状态中的某些变化。  异常处理 系统中可能的每种异常都分配了一个唯一的非负整数的异常号 处理器分配：被0除、缺页、内存访问违例、断点及算数运算溢出 操作系统内核分配：系统调用和来自外部I/O设备的信号  异常的类别中断、陷阱、故障和终止 进程 在现代系统上运行一个程序时，我们会得到一个">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2018/12/23/异常控制流/信号.png">
+<meta property="og:updated_time" content="2019-06-15T02:57:41.159Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="异常控制流">
+<meta name="twitter:description" content="异常 异常是异常控制流的一种形式，它一部分由硬件实现，一部分由操作系统实现。异常就是控制流中的突变，用来响应处理器状态中的某些变化。  异常处理 系统中可能的每种异常都分配了一个唯一的非负整数的异常号 处理器分配：被0除、缺页、内存访问违例、断点及算数运算溢出 操作系统内核分配：系统调用和来自外部I/O设备的信号  异常的类别中断、陷阱、故障和终止 进程 在现代系统上运行一个程序时，我们会得到一个">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/23/异常控制流/信号.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/23/异常控制流/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>异常控制流 | 笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/23/异常控制流/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur">
+      <meta itemprop="description" content="个人笔记">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">异常控制流
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-23 15:04:45" itemprop="dateCreated datePublished" datetime="2018-12-23T15:04:45+08:00">2018-12-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-15 10:57:41" itemprop="dateModified" datetime="2019-06-15T10:57:41+08:00">2019-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><blockquote>
+<p>异常是异常控制流的一种形式，它一部分由硬件实现，一部分由操作系统实现。异常就是控制流中的突变，用来响应处理器状态中的某些变化。</p>
+</blockquote>
+<h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><blockquote>
+<p>系统中可能的每种异常都分配了一个唯一的非负整数的异常号</p>
+<p>处理器分配：被0除、缺页、内存访问违例、断点及算数运算溢出</p>
+<p>操作系统内核分配：系统调用和来自外部I/O设备的信号</p>
+</blockquote>
+<h3 id="异常的类别"><a href="#异常的类别" class="headerlink" title="异常的类别"></a>异常的类别</h3><p>中断、陷阱、故障和终止</p>
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><blockquote>
+<p>在现代系统上运行一个程序时，我们会得到一个假象，就好像我们的程序是系统中当前运行的唯一的程序一样。程序好像独占地使用CPU和内存。处理器好像无间断地一条接一条地执行程序中的指令。程序中的代码和数据好像是系统内存中唯一的对象。</p>
+</blockquote>
+<h3 id="用户模式和内核模式"><a href="#用户模式和内核模式" class="headerlink" title="用户模式和内核模式"></a>用户模式和内核模式</h3><blockquote>
+<p>处理器通过某个寄存器的<code>模式位</code>来控制程序从用户态到内核态的转换。</p>
+<p>当设置了模式位时，进程就运行在内核模式中，一个运行在内核无中的进程可以执行指令集中的任何指令，并且可以访问系统中的任何内存位置。</p>
+<p>没有设置模式位时，进程就运行在用户模式中。用户模式中的进程不允许执行<code>特权指令</code>，比如停止处理器、改变模式位，或者发起一个I/O操作。也不允许用户模式中的进程直接引用地址空间中内核区的代码和数据。任何这样的尝试都会导致致命的保护故障。</p>
+</blockquote>
+<h3 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h3><blockquote>
+<p>操作系统内核使用一种成为<code>上下文切换</code>的异常控制流来实现多人物。</p>
+<p>内核为每一个进程维持一个上下文。上下文就是内核重新启动一个被抢占的进程所需的状态。它由通过目的<code>寄存器</code>、<code>浮点寄存器</code>、<code>程序计数器</code>、<code>用户栈</code>、<code>状态寄存器</code>、<code>内核栈</code>和各种内核数据结构，比如描述地址空间的<code>页表</code>、包含有关当前进程信息的<code>进程表</code>以及包含进程已打开文件的信息的<code>文件表</code></p>
+</blockquote>
+<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><blockquote>
+<p>一个信号就是一条小信息，它通知进程系统中发生了某种类型的事件</p>
+</blockquote>
+<p><img src="信号.png" alt="img"></p>
+<h4 id="发送信号"><a href="#发送信号" class="headerlink" title="发送信号"></a>发送信号</h4><blockquote>
+<p>内核通过更新目的进程上下文中的某个状态，发送一个信号给目的进程。</p>
+<p>Unix系统的发送信号机制是基于<code>进程组</code>的，每个<code>进程</code>都属于一个<code>进程组</code>，默认的一个<code>子进程</code>和它的<code>父进程</code>属于同一个<code>进程组</code>，一个进程也可以通过<code>setpgid(pid_t pid, pid_t pgid)</code>函数改变自己或其他进程的进程组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> linux&gt; /bin/kill -9 15213</span><br><span class="line"><span class="meta">&gt;</span> 发送信号9（SIGKILL）给进程 15213</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>在键盘上输入<code>Ctrl+C</code>会导致内核发送一个SIGINT信号到前台进程组中的每个进程。</p>
+</blockquote>
+<h4 id="接收信号"><a href="#接收信号" class="headerlink" title="接收信号"></a>接收信号</h4><blockquote>
+<p>当目的进程被内核强迫以某种方式对信号的发送做出反应时，它就接收了这个信号。进程可以忽略这个信号，终止或者通过执行一个称为<code>信号处理程序</code>的用户层函数捕获这个信号。</p>
+<p>当内核把进程p从内核模式切换到用户模式时，它会检查进程p的未被阻塞的待处理信号的集合。如果这个集合为空，那么内核将控制传递到p的逻辑控制流中的下一条指令。如果集合是非空的，那么内核选择集合中的某个信号k，并且强制p接收信号k。收到这个信号会出发进程采取某种行为，一旦进程完成了这个行为，那么控制就传递回p的逻辑控制流中的吓一跳指令。每个信号的类型都有一个预定义的默认行为：1、进程终止 2、进程终止并转储内存 3、进程停止（挂起）直到被SIGCONT信号重启 4、进程忽略该信号</p>
+</blockquote>
+<h4 id="阻塞和解除阻塞信号"><a href="#阻塞和解除阻塞信号" class="headerlink" title="阻塞和解除阻塞信号"></a>阻塞和解除阻塞信号</h4><h5 id="隐式阻塞机制"><a href="#隐式阻塞机制" class="headerlink" title="隐式阻塞机制"></a>隐式阻塞机制</h5><blockquote>
+<p>内核默认阻塞任何当前处理程序正在处理信号类型的待处理信号。</p>
+<p>例如：程序捕获了信号s，当前 正在运行处理程序S。如果发送给该进程另一个信号s，那么直到处理程序S返回，s会变成待处理而没有被接收。</p>
+</blockquote>
+<h5 id="显示阻塞机制"><a href="#显示阻塞机制" class="headerlink" title="显示阻塞机制"></a>显示阻塞机制</h5><blockquote>
+<p>应用程序可以使用sigprocmask函数和它的辅助函数，明确地阻塞和解除阻塞选定的信号。</p>
+</blockquote>
+<h3 id="操作进程的工具"><a href="#操作进程的工具" class="headerlink" title="操作进程的工具"></a>操作进程的工具</h3><ul>
+<li>STRACE：打印一个正在运行的程序和它的子进程调用的每个系统调用的轨迹</li>
+<li>PS：列出当前系统中的进程（包括僵死进程）</li>
+<li>TOP：打印出关于当前进程资源使用的信息</li>
+<li>PMAP：显示进程的内存映射</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/20/Nginx配置/" rel="next" title="Nginx配置">
+                <i class="fa fa-chevron-left"></i> Nginx配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/02/虚拟内存/" rel="prev" title="虚拟内存">
+                虚拟内存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur</p>
+              <p class="site-description motion-element" itemprop="description">个人笔记</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">1.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常处理"><span class="nav-number">2.</span> <span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异常的类别"><span class="nav-number">3.</span> <span class="nav-text">异常的类别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程"><span class="nav-number">4.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户模式和内核模式"><span class="nav-number">5.</span> <span class="nav-text">用户模式和内核模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上下文切换"><span class="nav-number">6.</span> <span class="nav-text">上下文切换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信号"><span class="nav-number">7.</span> <span class="nav-text">信号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送信号"><span class="nav-number">7.1.</span> <span class="nav-text">发送信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接收信号"><span class="nav-number">7.2.</span> <span class="nav-text">接收信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞和解除阻塞信号"><span class="nav-number">7.3.</span> <span class="nav-text">阻塞和解除阻塞信号</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#隐式阻塞机制"><span class="nav-number">7.3.1.</span> <span class="nav-text">隐式阻塞机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#显示阻塞机制"><span class="nav-number">7.3.2.</span> <span class="nav-text">显示阻塞机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作进程的工具"><span class="nav-number">8.</span> <span class="nav-text">操作进程的工具</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

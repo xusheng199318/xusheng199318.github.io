@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="信息就是位+上下文​    系统中的所有信息–包括磁盘文件、内存中的不同程序、内存中存放的用户数据以及网络上传送的数据，都是由一串比特表示的。 源程序是由一个由值0和1组成的位（比特）序列，8个位（bit）被组织成一排，称为字节（byte） 123456#include&amp;lt;stdio.h&amp;gt;int main() &amp;#123;    printf(&quot;hello, world\n&quot;);">
+<meta name="keywords" content="操作系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机系统漫游">
+<meta property="og:url" content="http://yoursite.com/2018/12/15/计算机系统漫游/index.html">
+<meta property="og:site_name" content="笔记">
+<meta property="og:description" content="信息就是位+上下文​    系统中的所有信息–包括磁盘文件、内存中的不同程序、内存中存放的用户数据以及网络上传送的数据，都是由一串比特表示的。 源程序是由一个由值0和1组成的位（比特）序列，8个位（bit）被组织成一排，称为字节（byte） 123456#include&amp;lt;stdio.h&amp;gt;int main() &amp;#123;    printf(&quot;hello, world\n&quot;);">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/helloc.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/编译过程.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/hello1.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/hello2.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/存储器层次结构.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/进程上下文切换.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/进程的虚拟地址空间.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/网络.png">
+<meta property="og:image" content="http://yoursite.com/home/arthur/softwares/blog/article/Article/CSAPP/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/telnet.png">
+<meta property="og:updated_time" content="2019-06-15T02:57:41.236Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机系统漫游">
+<meta name="twitter:description" content="信息就是位+上下文​    系统中的所有信息–包括磁盘文件、内存中的不同程序、内存中存放的用户数据以及网络上传送的数据，都是由一串比特表示的。 源程序是由一个由值0和1组成的位（比特）序列，8个位（bit）被组织成一排，称为字节（byte） 123456#include&amp;lt;stdio.h&amp;gt;int main() &amp;#123;    printf(&quot;hello, world\n&quot;);">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/15/计算机系统漫游/helloc.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/15/计算机系统漫游/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>计算机系统漫游 | 笔记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-主页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>主页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/15/计算机系统漫游/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arthur">
+      <meta itemprop="description" content="个人笔记">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">计算机系统漫游
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-15 22:12:28" itemprop="dateCreated datePublished" datetime="2018-12-15T22:12:28+08:00">2018-12-15</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-06-15 10:57:41" itemprop="dateModified" datetime="2019-06-15T10:57:41+08:00">2019-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="信息就是位-上下文"><a href="#信息就是位-上下文" class="headerlink" title="信息就是位+上下文"></a>信息就是位+上下文</h3><p>​    系统中的所有信息–包括磁盘文件、内存中的不同程序、内存中存放的用户数据以及网络上传送的数据，都是由一串<strong><em>比特</em></strong>表示的。</p>
+<p>源程序是由一个由值0和1组成的位（比特）序列，8个<strong><em>位（bit）</em></strong>被组织成一排，称为<strong><em>字节（byte）</em></strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"hello, world\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码是以<strong><em>字节序列</em></strong>的方式存储在文件中的，大部分现代计算机系统都使用ASCII标准来表示文本字符。</p>
+<p><img src="helloc.png" alt="helloc"></p>
+<p>​                                上述代码的ASCII文本表示</p>
+<h3 id="程序被编译的基本过程"><a href="#程序被编译的基本过程" class="headerlink" title="程序被编译的基本过程"></a>程序被编译的基本过程</h3><p><img src="编译过程.png" alt="img"></p>
+<h4 id="预处理阶段："><a href="#预处理阶段：" class="headerlink" title="预处理阶段："></a>预处理阶段：</h4><p>​    将文件中引用其他文件（stdio.h）中的内容插入程序文本中，生成以<strong>.i</strong>结尾的文件（hello.i）</p>
+<h4 id="编译阶段："><a href="#编译阶段：" class="headerlink" title="编译阶段："></a>编译阶段：</h4><p>​    编译器将<strong>hello.i</strong>翻译成文本文件<strong>hello.s</strong>，它包含一个汇编程序</p>
+<h4 id="汇编阶段"><a href="#汇编阶段" class="headerlink" title="汇编阶段"></a>汇编阶段</h4><p>​    汇编器将<strong>hello.s</strong>翻译成机器语言指令生成<strong>hello.o</strong>文件</p>
+<h4 id="链接阶段"><a href="#链接阶段" class="headerlink" title="链接阶段"></a>链接阶段</h4><p>​    链接器将代码中的<strong>printf</strong>函数从<strong>printf.o</strong>文件中合并到hello.o程序中，最后得到<strong>hello</strong>文件（可执行文件）</p>
+<h3 id="从系统的硬件组成角度看运行hello程序时发生了什么"><a href="#从系统的硬件组成角度看运行hello程序时发生了什么" class="headerlink" title="从系统的硬件组成角度看运行hello程序时发生了什么"></a>从系统的硬件组成角度看运行hello程序时发生了什么</h3><p>​    1. 当我们在键盘上输入字符串“./hello”后，shell程序将字符逐一读入寄存器，再把它放在内存中</p>
+<p><img src="hello1.png" alt="img"></p>
+<ol>
+<li><p>在键盘上敲击回车时，shell将目标文件中的代码和数据复制到主存。hello文件中的代码被加载到主存后，处理器就开始执行hello程序的main方法中的机器语言指令。这些指令将”hello, world\n”字符串中的字节从主存复制到寄存器文件，再从寄存器文件中复制到显示设备，最终显示在屏幕上。</p>
+<p><img src="hello2.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="存储器的层次结构"><a href="#存储器的层次结构" class="headerlink" title="存储器的层次结构"></a>存储器的层次结构</h3><p><img src="存储器层次结构.png" alt="img"></p>
+<p>当CPU寄存器要访问某个数据时先从L1中查看是否有该数据，如果有则从L1中获取，如果没有则从L2中查看，以此类推。</p>
+<h3 id="操作系统的核心概念：线程，虚拟地址空间，文件"><a href="#操作系统的核心概念：线程，虚拟地址空间，文件" class="headerlink" title="操作系统的核心概念：线程，虚拟地址空间，文件"></a>操作系统的核心概念：线程，虚拟地址空间，文件</h3><h4 id="进程："><a href="#进程：" class="headerlink" title="进程："></a>进程：</h4><p>​    进程是操作系统对一个正在运行的程序的一种抽象。例如：QQ就是一个进程。</p>
+<p>​    在任何一个时刻单处理器系统都只能执行一个进程的代码。</p>
+<p><img src="进程上下文切换.png" alt="img"></p>
+<p>​    </p>
+<h4 id="线程："><a href="#线程：" class="headerlink" title="线程："></a>线程：</h4><p>​    一个进程可以由多个线程组成，每个线程都运行在进程的上下文中，共享同样的代码和数据。</p>
+<h4 id="虚拟内存："><a href="#虚拟内存：" class="headerlink" title="虚拟内存："></a>虚拟内存：</h4><p>​    虚拟内存为每个进程提供了一个每个进程都在独占地使用主存。下图为Linux进程的虚拟地址空间。虚拟地址空间最上面的部分区域是保留给操作系统中的代码和数据的，用户程序无法访问。<img src="进程的虚拟地址空间.png" alt="img"></p>
+<h4 id="文件："><a href="#文件：" class="headerlink" title="文件："></a>文件：</h4><p>​    文件就是字节序列。每个I/O设备，包括磁盘、键盘、显示器、甚至网络都可以看成是文件。系统中通过使用一小组Unix I/O的系统函数调用读写文件来实现的。</p>
+<h3 id="系统之间的网络通信"><a href="#系统之间的网络通信" class="headerlink" title="系统之间的网络通信"></a>系统之间的网络通信</h3><p>​    系统可以从主存复制一串字节到网络适配器，数据流经过网络适配器到达另一台机器。同样系统可以读取从其他机器发送来的数据，并把数据复制到自己的主存。</p>
+<p><img src="网络.png" alt="img"></p>
+<p>​    例如：我们可以使用telnet应用在一个远程主机上运行hello程序</p>
+<p><img src="/home/arthur/softwares/blog/article/Article/CSAPP/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/telnet.png" alt="img"></p>
+<p>​    当我们在telnet客户端键入<code>hello</code>字符串并桥下回车，客户端软件会将这个字符串发送到telnet服务器。telnet服务器从网络上接收到这个字符串后，会把它传送给远端shell程序。接下来，远端shell运行hello程序，并将输出行返回给telnet服务器。最后，telnet服务器通过网络把输出穿转发给telnet客户端，客户端就将输出到我们本地终端上。</p>
+<h3 id="并行和并发"><a href="#并行和并发" class="headerlink" title="并行和并发"></a>并行和并发</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#### 线程级并发</span><br></pre></td></tr></table></figure>
+<p>​    CPU在一个进程内的不同线程之间不停切换运行。现代处理器提供了<strong><em>超线程</em></strong>来提高CPU的并发能力。<strong><em>超线程</em></strong>是指允许一个CPU同时执行多个控制流的技术。例如：i7处理器可以让每个核执行2个线程。</p>
+<h4 id="指令集并行"><a href="#指令集并行" class="headerlink" title="指令集并行"></a>指令集并行</h4><p>​    现代处理器可以同时执行多条指令</p>
+<h4 id="单指令、多数据并行（SIMD并行）"><a href="#单指令、多数据并行（SIMD并行）" class="headerlink" title="单指令、多数据并行（SIMD并行）"></a>单指令、多数据并行（SIMD并行）</h4><p>​    许多现代处理器拥有特殊的硬件，允许一条指令产生多个可以并行执行的操作。</p>
+<h3 id="计算机系统提供的抽象"><a href="#计算机系统提供的抽象" class="headerlink" title="计算机系统提供的抽象"></a>计算机系统提供的抽象</h3><p>​    抽象是指将复杂的处理封装成一个简单地概念，使用者在使用时不需要了解内部具体是如何执行的。例如：指令集架构提供了对实际处理器硬件的抽象，使用这个抽象，机器代码程序表现得就好像运行在一个一次只执行一条指令的机器上。</p>
+<p>​    在比如：JAVA中我们只需要通过<code>new</code>来创建一个对象，对于底层如何申请内存空间、执行什么机器指令我们并不需要关心。helloc.png</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/15/存储器层次结构/" rel="next" title="存储器层次结构">
+                <i class="fa fa-chevron-left"></i> 存储器层次结构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/15/信息的表示和处理（上）/" rel="prev" title="信息的表示和处理（上）">
+                信息的表示和处理（上） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Arthur</p>
+              <p class="site-description motion-element" itemprop="description">个人笔记</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#信息就是位-上下文"><span class="nav-number">1.</span> <span class="nav-text">信息就是位+上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#程序被编译的基本过程"><span class="nav-number">2.</span> <span class="nav-text">程序被编译的基本过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预处理阶段："><span class="nav-number">2.1.</span> <span class="nav-text">预处理阶段：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编译阶段："><span class="nav-number">2.2.</span> <span class="nav-text">编译阶段：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#汇编阶段"><span class="nav-number">2.3.</span> <span class="nav-text">汇编阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接阶段"><span class="nav-number">2.4.</span> <span class="nav-text">链接阶段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从系统的硬件组成角度看运行hello程序时发生了什么"><span class="nav-number">3.</span> <span class="nav-text">从系统的硬件组成角度看运行hello程序时发生了什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储器的层次结构"><span class="nav-number">4.</span> <span class="nav-text">存储器的层次结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#操作系统的核心概念：线程，虚拟地址空间，文件"><span class="nav-number">5.</span> <span class="nav-text">操作系统的核心概念：线程，虚拟地址空间，文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#进程："><span class="nav-number">5.1.</span> <span class="nav-text">进程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程："><span class="nav-number">5.2.</span> <span class="nav-text">线程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#虚拟内存："><span class="nav-number">5.3.</span> <span class="nav-text">虚拟内存：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件："><span class="nav-number">5.4.</span> <span class="nav-text">文件：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统之间的网络通信"><span class="nav-number">6.</span> <span class="nav-text">系统之间的网络通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并行和并发"><span class="nav-number">7.</span> <span class="nav-text">并行和并发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令集并行"><span class="nav-number">7.1.</span> <span class="nav-text">指令集并行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单指令、多数据并行（SIMD并行）"><span class="nav-number">7.2.</span> <span class="nav-text">单指令、多数据并行（SIMD并行）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算机系统提供的抽象"><span class="nav-number">8.</span> <span class="nav-text">计算机系统提供的抽象</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arthur</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
